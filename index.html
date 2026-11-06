@@ -179,7 +179,7 @@
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v5</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v6</small></div>
   <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
   <span class="timer" id="timer" title="Lestijd">00:00</span>
   <button class="btn sm ghost" id="copyLink" data-teacher type="button">Link voor leerling</button>
@@ -483,10 +483,11 @@ function startTeacher2(){
   getMedia().then(function(stream){
     local = stream; afterJoin();
     peer = new Peer(TEACHER_ID, {config:ICE, debug:0});
-    peer.on("open", function(){ status("Wachten op je leerling", 'Klik op "Link voor leerling" en stuur die link.'); });
+    peer.on("open", function(){ status("Wachten op je leerling", 'Lescode: ' + ROOM + '. Klik op "Link voor leerling" en stuur die link.'); });
     peer.on("error", function(err){
       if(err.type === "unavailable-id") status("Les staat al open", "Deze les is al open in een ander tabblad of op een ander apparaat. Sluit die eerst.");
-      else if(err.type === "network" || err.type === "server-error" || err.type === "socket-error") status("Geen verbinding", "Kan de server niet bereiken. Check je internet.");
+      else if(err.type === "network" || err.type === "server-error" || err.type === "socket-error") status("Geen verbinding", "Kan de server niet bereiken (" + err.type + "). Check je internet of zet een adblocker uit.");
+      else status("Fout", "Foutcode: " + err.type + ". Ververs de pagina en klik opnieuw op Start de les.");
     });
     peer.on("disconnected", function(){ try{ if(peer && !peer.destroyed) peer.reconnect(); }catch(e){} });
     peer.on("connection", function(conn){
@@ -518,8 +519,9 @@ function startStudent2(){
     peer = new Peer(undefined, {config:ICE, debug:0});
     peer.on("open", connectTeacher);
     peer.on("error", function(err){
-      if(err.type === "peer-unavailable"){ status("Je docent is er nog niet", "We proberen het elke 5 seconden opnieuw."); retry(); }
-      else if(err.type === "network" || err.type === "server-error" || err.type === "socket-error"){ status("Geen verbinding", "Kan de server niet bereiken. Check je internet."); retry(); }
+      if(err.type === "peer-unavailable"){ status("Je docent is er nog niet", "We zoeken les " + ROOM + " en proberen het elke 5 seconden opnieuw."); retry(); }
+      else if(err.type === "network" || err.type === "server-error" || err.type === "socket-error"){ status("Geen verbinding", "Kan de server niet bereiken (" + err.type + "). Check je internet."); retry(); }
+      else { status("Fout", "Foutcode: " + err.type + ". We proberen het opnieuw."); retry(); }
     });
     peer.on("disconnected", function(){ try{ if(peer && !peer.destroyed) peer.reconnect(); }catch(e){} });
   });
@@ -527,7 +529,7 @@ function startStudent2(){
 function retry(){ clearTimeout(retryT); retryT = setTimeout(function(){ if(peer && !peer.destroyed && !online()) connectTeacher(); }, 5000); }
 function connectTeacher(){
   if(!peer || peer.destroyed) return;
-  status("Verbinden", "Verbinden met je docent...");
+  status("Verbinden", "Verbinden met les " + ROOM + "...");
   tConn = peer.connect(TEACHER_ID, {reliable:true, metadata:{naam:myName}});
   tConn.on("open", function(){ joinedAt = Date.now(); send({t:"hello"}); if(!$("remotes").children.length) status("Verbonden", "Wachten op het beeld van je docent..."); });
   tConn.on("data", onMessage);
@@ -569,12 +571,17 @@ $("selfBtn").addEventListener("click", function(){
 setInterval(function(){
   var n = isT ? Object.keys(conns).filter(function(id){ return conns[id].open; }).length : (online() ? 1 : 0);
   var c = $("conn");
-  c.textContent = isT ? (peer ? (n === 1 ? "1 leerling verbonden" : n + " leerlingen verbonden") : "niet gestart") : (n ? "verbonden met docent" : "niet verbonden");
+  var srv = peer && !peer.destroyed && !peer.disconnected && peer.open !== false;
+  c.textContent = isT ? (peer ? (srv ? (n === 1 ? "1 leerling verbonden" : n + " leerlingen verbonden") : "server niet bereikt") : "niet gestart") : (n ? "verbonden met docent" : "niet verbonden");
+  c.title = "Lescode: " + (ROOM || "-");
   c.classList.toggle("ok", n > 0);
   if(!joinedAt){ $("timer").textContent = "00:00"; return; }
   var s = Math.floor((Date.now() - joinedAt) / 1000);
   $("timer").textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
 }, 1000);
+setInterval(function(){
+  if(peer && !peer.destroyed && peer.disconnected){ try{ peer.reconnect(); }catch(e){} }
+}, 8000);
 if(!isT && !ROOM) status("Verkeerde link", "Vraag je docent om de link van de les opnieuw te sturen.");
 
 /* ---------- videovenster: slepen, verbergen, onthouden ---------- */
