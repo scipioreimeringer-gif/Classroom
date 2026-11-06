@@ -179,7 +179,7 @@
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v6</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v9</small></div>
   <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
   <span class="timer" id="timer" title="Lestijd">00:00</span>
   <button class="btn sm ghost" id="copyLink" data-teacher type="button">Link voor leerling</button>
@@ -376,7 +376,13 @@
    verbindt, kun je hier later gratis TURN-gegevens plakken (bijvoorbeeld van metered.ca).
    ========================================================================== */
 var TEACHER_NAME = "Scip";
-var TURN_SERVERS = [];   // bijvoorbeeld [{urls:"turn:...:443", username:"...", credential:"..."}]
+var TURN_SERVERS = [
+  // ExpressTURN (gratis tot 1000 GB per maand): de gewone route als een directe verbinding niet lukt
+  {urls:["turn:free.expressturn.com:3478?transport=udp", "turn:free.expressturn.com:3478?transport=tcp"], username:"000000002109324976", credential:"WInfYKuL0ru79Uz2lJfFYzmYHYw="},
+  // Metered (gratis 500 MB per maand): alleen als reserve via poort 443, voor netwerken die 3478 blokkeren
+  {urls:"turns:global.relay.metered.ca:443?transport=tcp", username:"484db6013e10bf56cafcea5b", credential:"9aX1xszJagXLyrep"}
+];
+var TURN_URL     = "";   // of: de link van metered.ca, zoiets als "https://jouwnaam.metered.live/api/v1/turn/credentials?apiKey=..."
 /* ========================================================================== */
 
 (function(){
@@ -459,7 +465,7 @@ function removeRemote(id){
 function watchIce(c, id){
   var pc = c.peerConnection; if(!pc) return;
   pc.addEventListener("iceconnectionstatechange", function(){
-    if(pc.iceConnectionState === "failed") status("Geen verbinding", "Het netwerk blokkeert de video. Probeer allebei een ander netwerk (bijvoorbeeld mobiele data), of vraag Scip om TURN aan te zetten.");
+    if(pc.iceConnectionState === "failed") status("Geen directe verbinding", (TURN_SERVERS.length || TURN_URL) ? "Ook via de TURN-server lukt het niet. Probeer een ander netwerk." : "Dit netwerk laat geen directe verbinding toe. Een TURN-server lost dit op (zie instellingen bovenaan het bestand).");
   });
 }
 function afterJoin(){
@@ -468,11 +474,20 @@ function afterJoin(){
   else toast("Geen camera of microfoon gevonden. Je kunt wel meekijken.");
 }
 
+/* TURN ophalen (alleen als TURN_URL is ingevuld) */
+var turnLoaded = false;
+function loadTurn(){
+  if(turnLoaded || !TURN_URL) return Promise.resolve();
+  return fetch(TURN_URL).then(function(r){ return r.json(); }).then(function(list){
+    if(Array.isArray(list) && list.length){ ICE.iceServers = ICE.iceServers.concat(list); }
+    turnLoaded = true;
+  }).catch(function(){ toast("TURN-server kon niet laden, we proberen het zonder"); });
+}
 /* reserve: als de vaste versie niet laadt, probeer de nieuwste 1.x */
 function ensurePeer(cb){
-  if(window.Peer) return cb(true);
+  if(window.Peer) return loadTurn().then(function(){ cb(true); });
   var s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js";
-  s.onload = function(){ cb(!!window.Peer); }; s.onerror = function(){ cb(false); };
+  s.onload = function(){ loadTurn().then(function(){ cb(!!window.Peer); }); }; s.onerror = function(){ cb(false); };
   document.head.appendChild(s);
 }
 function startTeacher(){
@@ -533,6 +548,7 @@ function connectTeacher(){
   tConn = peer.connect(TEACHER_ID, {reliable:true, metadata:{naam:myName}});
   tConn.on("open", function(){ joinedAt = Date.now(); send({t:"hello"}); if(!$("remotes").children.length) status("Verbonden", "Wachten op het beeld van je docent..."); });
   tConn.on("data", onMessage);
+  setTimeout(function(){ if(tConn) watchIce(tConn, "data"); }, 500);
   tConn.on("close", function(){ tConn = null; removeRemote("docent"); retry(); });
   if(local){
     tCall = peer.call(TEACHER_ID, local, {metadata:{naam:myName}});
