@@ -38,6 +38,8 @@
   .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--coral)}
   .brand small{font-family:var(--body);font-weight:500;color:var(--muted);letter-spacing:0}
   .timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
+  .conn{font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:100px;background:var(--coral-soft);color:var(--coral);white-space:nowrap}
+  .conn.ok{background:var(--teal-soft);color:var(--teal)}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line-strong);background:var(--surface);border-radius:100px;padding:7px 13px;font-weight:700;font-size:.86rem;cursor:pointer;white-space:nowrap}
   .btn:hover{border-color:var(--teal)}
   .btn.primary{background:var(--coral);border-color:var(--coral);color:#fff}
@@ -177,7 +179,8 @@
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v5</small></div>
+  <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
   <span class="timer" id="timer" title="Lestijd">00:00</span>
   <button class="btn sm ghost" id="copyLink" data-teacher type="button">Link voor leerling</button>
   <button class="btn sm primary" id="joinBtn" type="button">Start de les</button>
@@ -564,6 +567,10 @@ $("selfBtn").addEventListener("click", function(){
   $("selfV").hidden = !selfView || !local;
 });
 setInterval(function(){
+  var n = isT ? Object.keys(conns).filter(function(id){ return conns[id].open; }).length : (online() ? 1 : 0);
+  var c = $("conn");
+  c.textContent = isT ? (peer ? (n === 1 ? "1 leerling verbonden" : n + " leerlingen verbonden") : "niet gestart") : (n ? "verbonden met docent" : "niet verbonden");
+  c.classList.toggle("ok", n > 0);
   if(!joinedAt){ $("timer").textContent = "00:00"; return; }
   var s = Math.floor((Date.now() - joinedAt) / 1000);
   $("timer").textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
