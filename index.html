@@ -3,1295 +3,364 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Klas | Learn with Scip</title>
-<meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;800&family=Karla:wght@400;500;600;700&display=swap">
+<title>Darlene oefent Nederlands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ground:#e9efee;--surface:#ffffff;--ink:#0f2a2e;--muted:#5a706d;--teal:#0a6b66;--teal-soft:#dbeae8;
-    --coral:#d0523a;--coral-soft:#fae5df;--line:#dbe4e2;--line-strong:#b8c9c5;--dock:#0f2a2e;--dock-ink:#e6eeeb;
-    --display:"Epilogue","Trebuchet MS",sans-serif;--body:"Karla",system-ui,sans-serif;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --ground:#0b1514;--surface:#131f1e;--ink:#e6eeeb;--muted:#93a8a4;--teal:#53beb3;--teal-soft:#16302d;
-      --coral:#f0876c;--coral-soft:#32201b;--line:#233230;--line-strong:#354a47;--dock:#060d0c;--dock-ink:#e6eeeb;
-    }
-  }
-  :root[data-theme="dark"]{
-    --ground:#0b1514;--surface:#131f1e;--ink:#e6eeeb;--muted:#93a8a4;--teal:#53beb3;--teal-soft:#16302d;
-    --coral:#f0876c;--coral-soft:#32201b;--line:#233230;--line-strong:#354a47;--dock:#060d0c;--dock-ink:#e6eeeb;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0}
-  body{height:100dvh}
-  body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow:hidden}
-  button,input,select,textarea{font:inherit;color:inherit}
-  [hidden]{display:none!important}
-  :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-  svg{width:18px;height:18px;flex:none}
-
-  /* ---------- top ---------- */
-  .top{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex:none}
-  .brand{font-family:var(--display);font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;margin-right:auto;white-space:nowrap}
-  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--coral)}
-  .brand small{font-family:var(--body);font-weight:500;color:var(--muted);letter-spacing:0}
-  .timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
-  .conn{font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:100px;background:var(--coral-soft);color:var(--coral);white-space:nowrap}
-  .conn.ok{background:var(--teal-soft);color:var(--teal)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line-strong);background:var(--surface);border-radius:100px;padding:7px 13px;font-weight:700;font-size:.86rem;cursor:pointer;white-space:nowrap}
-  .btn:hover{border-color:var(--teal)}
-  .btn.primary{background:var(--coral);border-color:var(--coral);color:#fff}
-  .btn.ghost{background:transparent}
-  .btn.sm{padding:5px 10px;font-size:.8rem}
-  .inp{border:1px solid var(--line-strong);background:var(--surface);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
-  textarea.inp{resize:vertical;min-height:110px;line-height:1.5}
-
-  /* ---------- werkruimte ---------- */
-  .ws{flex:1;min-height:0;display:grid;grid-template-columns:1fr 8px 1fr;gap:0;padding:12px 12px 0;position:relative}
-  .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
-  .phead{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 14px;border-bottom:1px solid var(--line);flex:none;flex-wrap:wrap}
-  .ptitle{font-family:var(--display);font-weight:800;font-size:.95rem;letter-spacing:-.01em;margin-right:auto}
-  .pnav{display:flex;align-items:center;gap:2px}
-  .pinfo{font-weight:700;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:44px;text-align:center}
-  .ib{width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;display:grid;place-items:center;cursor:pointer;color:inherit}
-  .ib:hover{background:var(--teal-soft)}
-  .ib:disabled{opacity:.35;cursor:default;background:transparent}
-  .pbody{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:10px;background:var(--ground)}
-  .surf{position:relative;background:#fff;border-radius:6px;box-shadow:0 10px 28px -18px rgba(15,42,46,.55);overflow:hidden}
-  .surf canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .surf .dc{touch-action:none;cursor:crosshair}
-  .surf.t-text .dc{cursor:text}
-  .nodraw .surf .dc{cursor:default}
-  .surf .msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#5a706d;padding:24px;pointer-events:none;font-size:.92rem}
-  .surf .msg b{display:block;font-family:var(--display);font-size:1.1rem;color:#0f2a2e;margin-bottom:4px}
-  .txtin{position:absolute;border:1px dashed #0a6b66;background:rgba(255,255,255,.9);outline:none;padding:0 3px;font-family:var(--body);font-weight:600;min-width:80px;z-index:3}
-  .loading{position:absolute;right:10px;top:10px;background:rgba(15,42,46,.85);color:#fff;font-size:.76rem;font-weight:700;padding:4px 10px;border-radius:100px;z-index:2}
-  .seg{display:flex;background:var(--ground);border-radius:100px;padding:3px;margin-right:auto}
-  .seg button{border:0;background:none;border-radius:100px;padding:5px 12px;font-family:var(--display);font-weight:800;font-size:.84rem;color:var(--muted);cursor:pointer}
-  .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(15,42,46,.18)}
-  .cvbar{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
-  .cvbar .ib{font-weight:800;font-size:.86rem}
-  .cvbar .ib.on{background:var(--teal-soft)}
-  .cvbody{align-items:stretch;justify-content:center;overflow:auto;padding:14px}
-  .cvpage{background:#fff;width:100%;max-width:820px;min-height:100%;border-radius:6px;box-shadow:0 10px 28px -18px rgba(15,42,46,.55);padding:26px 32px 60px;cursor:text}
-  .cv{outline:none;font-family:var(--body);font-size:17px;line-height:1.6;color:#0f2a2e;min-height:260px;position:relative}
-  .cv .b{min-height:1.6em;word-wrap:break-word}
-  .cv .b[data-t="h"]{font-family:var(--display);font-weight:800;font-size:1.42em;line-height:1.25;letter-spacing:-.01em;margin:.45em 0 .2em}
-  .cv .b[data-t="li"]{padding-left:1.4em;position:relative}
-  .cv .b[data-t="li"]:before{content:"";position:absolute;left:.45em;top:.68em;width:6px;height:6px;border-radius:50%;background:#d0523a}
-  .cv.is-empty:before{content:attr(data-ph);position:absolute;left:0;top:0;color:#93a8a4;pointer-events:none}
-  .nodraw .cv{cursor:default}
-  .split{cursor:col-resize;position:relative}
-  .split:after{content:"";position:absolute;left:3px;top:40%;width:2px;height:20%;border-radius:2px;background:var(--line-strong)}
-  .ws-empty{position:absolute;inset:12px 12px 0;display:grid;place-items:center;text-align:center;color:var(--muted)}
-
-  /* ---------- dock ---------- */
-  .dock{flex:none;display:flex;align-items:center;gap:6px;padding:8px 12px;margin:10px 12px 12px;background:var(--dock);color:var(--dock-ink);border-radius:14px;flex-wrap:wrap;justify-content:space-between}
-  .grp{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-  .db{height:38px;min-width:38px;padding:0 10px;border-radius:10px;border:1px solid transparent;background:transparent;color:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-weight:700;font-size:.82rem}
-  .db:hover{background:rgba(255,255,255,.1)}
-  .db[aria-pressed="true"]{background:rgba(127,212,202,.18);border-color:rgba(127,212,202,.55)}
-  .db.off{background:#d0523a;border-color:#d0523a;color:#fff}
-  .db.leave{background:#d0523a;color:#fff}
-  .db .lbl{white-space:nowrap}
-  .sw{width:20px;height:20px;border-radius:50%;border:2px solid var(--dock)}
-  .vsep{width:1px;height:26px;background:rgba(255,255,255,.16);margin:0 4px}
-
-  /* ---------- video venster ---------- */
-  .vwin{position:fixed;z-index:40;width:340px;height:255px;min-width:140px;min-height:110px;max-width:96vw;max-height:80vh;resize:both;overflow:hidden;background:#0b1514;border-radius:12px;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08)}
-  .vhead{flex:none;display:flex;align-items:center;gap:4px;padding:4px 4px 4px 12px;color:#cfe0dc;font-size:.8rem;font-weight:700;cursor:grab;user-select:none;touch-action:none;background:#0f2a2e}
-  .vhead:active{cursor:grabbing}
-  .vhead .t{margin-right:auto;display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
-  .vhead .t span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .vhead .ib{flex:none}
-  .vhead .ib{width:28px;height:28px;color:#cfe0dc}
-  .vhead .ib:hover{background:rgba(255,255,255,.1)}
-  .vhead .ib[aria-pressed="true"]{background:rgba(127,212,202,.2)}
-  .vbody{flex:1;min-height:0;position:relative}
-  .vbody iframe{width:100%;height:100%;border:0;display:block}
-  .vph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#cfe0dc;text-align:center;padding:16px;font-size:.84rem}
-  .vph b{color:#fff;font-family:var(--display)}
-  .vwin.dragging iframe,.vwin.dragging video{pointer-events:none}
-  .remotes{position:absolute;inset:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px;background:#0b1514}
-  .remotes:empty{display:none}
-  .remotes video{width:100%;height:100%;object-fit:cover;background:#000;display:block}
-  .selfv{position:absolute;right:8px;bottom:8px;width:30%;max-width:150px;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:2px solid rgba(255,255,255,.65);transform:scaleX(-1);z-index:2;background:#000}
-  .vph{z-index:1}
-
-  /* ---------- notities (lade) ---------- */
-  .drawer{position:fixed;z-index:35;top:56px;right:12px;bottom:84px;width:380px;max-width:calc(100vw - 24px);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 60px -24px rgba(15,42,46,.55);display:flex;flex-direction:column}
-  .nhead{display:flex;gap:6px;align-items:center;padding:10px 10px 0}
-  .tabs{display:flex;gap:0;padding:8px 10px 0;border-bottom:1px solid var(--line);overflow-x:auto}
-  .tab{border:0;background:none;padding:7px 8px;font-weight:700;font-size:.82rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
-  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--coral)}
-  .pane{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:9px}
-  .lab{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .row{display:flex;gap:8px;align-items:center}
-  .words{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
-  .words li{display:flex;gap:8px;align-items:flex-start;background:var(--ground);border-radius:6px;padding:7px 9px;font-size:.9rem}
-  .words li span{flex:1}
-  .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.05rem;line-height:1;padding:2px 4px}
-  .hist{display:flex;flex-direction:column;gap:8px}
-  .hist details{background:var(--ground);border-radius:6px;padding:8px 10px}
-  .hist summary{cursor:pointer;font-weight:700;font-size:.88rem}
-  .hist pre{white-space:pre-wrap;font-family:inherit;margin:8px 0 0;font-size:.86rem}
-  .muted{color:var(--muted);font-size:.84rem}
-  .saved{font-size:.74rem;color:var(--muted);margin-left:auto}
-  .nfoot{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);flex-wrap:wrap}
-
-  .ov{position:fixed;inset:0;background:rgba(6,16,15,.7);display:grid;place-items:center;z-index:60;padding:16px}
-  .dlg{background:var(--surface);border-radius:12px;padding:22px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px}
-  .dlg h2{font-family:var(--display);margin:0;font-size:1.3rem;letter-spacing:-.02em}
-  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:9px 16px;border-radius:100px;font-weight:700;font-size:.86rem;z-index:70}
-
-  /* mobiel wisselen */
-  .mswitch{display:none;flex:none;gap:4px;padding:8px 12px 0}
-  .mswitch button{flex:1;border:1px solid var(--line-strong);background:var(--surface);border-radius:100px;padding:7px 8px;font-weight:700;font-size:.84rem;cursor:pointer;position:relative}
-  .mswitch button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
-  .mswitch button.new:after{content:"";position:absolute;top:5px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--coral)}
-  .ws.stack{row-gap:10px}
-
-  @media (max-width:1024px){
-    .db .lbl{display:none}
-    .drawer{top:auto;bottom:76px;height:72dvh}
-  }
-  @media (max-width:700px){
-    .mswitch{display:flex}
-    .top{padding:6px 10px;gap:8px}
-    .top .btn.ghost{display:none}
-    .ws{padding:8px 8px 0}
-    .phead{padding:5px 6px 5px 8px}
-    .phead [data-close]{display:none}
-    .pbody{padding:6px}
-    .cvpage{padding:18px 16px 40px}
-    .cv{font-size:16px}
-    .dock{margin:6px 8px 8px;padding:6px;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;gap:2px;-webkit-overflow-scrolling:touch}
-    .dock .grp{flex-wrap:nowrap;gap:2px}
-    .dock [data-panel]{display:none}
-    .db{height:36px;min-width:36px;padding:0 7px}
-    .vsep{display:none}
-    .toast{bottom:76px}
-  }
+:root{--teal:#1F4E5F;--coral:#E07A5F;--green:#3D9970;--red:#C0392B;--bg:#F6F8F9;--card:#fff;--tint:#EEF4F5;--peach:#FDF1EC;--ink:#1E2A32;--muted:#5E6E76;--line:#DCE4E7}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45}
+header{background:var(--teal);color:#fff;padding:26px 20px 18px}
+header h1{font-family:"DM Serif Display",serif;font-weight:400;font-size:30px;margin:0 0 4px}
+header p{margin:0;opacity:.85;font-size:14px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:12px 16px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;scrollbar-width:thin}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+nav button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+nav button .new{font-size:10px;font-weight:700;background:var(--coral);color:#fff;border-radius:999px;padding:1px 6px;margin-left:5px;vertical-align:1px}
+main{max-width:780px;margin:0 auto;padding:20px 16px 60px}
+section{display:none}section.on{display:block}
+h2{font-family:"DM Serif Display",serif;font-weight:400;font-size:26px;color:var(--teal);margin:4px 0 6px}
+h3{font-size:16px;margin:18px 0 8px;color:var(--teal)}
+.intro{color:var(--muted);margin:0 0 16px;font-size:15px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.rule{background:var(--tint);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:15px}
+.rule b{color:var(--teal)}
+.score{display:inline-block;background:var(--peach);color:var(--coral);font-weight:700;border-radius:999px;padding:4px 12px;font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;background:var(--teal);color:#fff;padding:10px 16px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:#fff;color:var(--teal);border:1px solid var(--teal)}
+.btn.coral{background:var(--coral)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}
+.seg button.on{background:var(--teal);color:#fff}
+/* home */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tile-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.tile-card:hover{border-color:var(--teal)}
+.tile-card .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.tile-card .d{font-size:13px;color:var(--muted);margin-bottom:10px}
+.bar{height:6px;background:var(--tint);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);border-radius:99px}
+.lesson{font-size:11px;font-weight:700;color:var(--coral);letter-spacing:.04em;text-transform:uppercase}
+/* flashcards */
+.flash{perspective:900px;height:220px;margin:6px 0 14px;cursor:pointer}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.flash.flip .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.front{background:var(--teal);color:#fff}
+.back{background:var(--peach);color:var(--ink);transform:rotateY(180deg)}
+.face .w{font-family:"DM Serif Display",serif;font-size:34px}
+.face .s{font-size:14px;opacity:.8;margin-top:6px}
+.meta{color:var(--muted);font-size:14px}
+/* quiz items */
+.q{padding:12px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q .p{margin-bottom:8px}
+.q input[type=text]{font:inherit;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;max-width:340px;background:#fff}
+input.ok,select.ok{border-color:var(--green)!important;background:#EAF6F0!important}
+input.bad,select.bad{border-color:var(--red)!important;background:#FBECEA!important}
+.fb{font-size:14px;margin-top:6px;min-height:1em}
+.fb.ok{color:var(--green)}.fb.bad{color:var(--red)}
+.choice{border:1.5px solid var(--line);background:#fff;padding:8px 14px;border-radius:10px;font:inherit;cursor:pointer;margin:0 6px 6px 0;text-align:left}
+.choice.ok{border-color:var(--green);background:#EAF6F0;color:var(--green);font-weight:600}
+.choice.bad{border-color:var(--red);background:#FBECEA;color:var(--red)}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.vgrid label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.vgrid input,.vgrid select{font:inherit;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;width:100%;background:#fff}
+.big{font-family:"DM Serif Display",serif;font-size:34px;color:var(--teal)}
+.huge{font-family:"DM Serif Display",serif;font-size:44px;color:var(--teal);text-align:center;margin:10px 0}
+/* tiles */
+.slot{min-height:54px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;background:#fff}
+.pool{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tile{border:0;background:var(--tint);color:var(--ink);padding:8px 12px;border-radius:9px;font:inherit;font-weight:500;cursor:pointer}
+.slot .tile{background:var(--teal);color:#fff}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--tint);color:var(--teal);margin-right:6px}
+.tag.c{background:var(--peach);color:var(--coral)}
+table.ref{border-collapse:collapse;width:100%;font-size:14px}
+table.ref th{background:var(--teal);color:#fff;text-align:left;padding:7px 9px}
+table.ref td{padding:7px 9px;border-bottom:1px solid var(--line)}
+table.ref tr:nth-child(even) td{background:var(--tint)}
+.kof{display:flex;gap:6px;justify-content:center;margin:6px 0 14px}
+.kof span{width:36px;height:36px;border-radius:9px;background:var(--peach);color:var(--coral);font-weight:700;display:flex;align-items:center;justify-content:center}
+@media(max-width:560px){.vgrid{grid-template-columns:1fr}.face .w{font-size:28px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v9</small></div>
-  <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
-  <span class="timer" id="timer" title="Lestijd">00:00</span>
-  <button class="btn sm ghost" id="copyLink" data-teacher type="button">Link voor leerling</button>
-  <button class="btn sm primary" id="joinBtn" type="button">Start de les</button>
+<header>
+  <h1>Darlene oefent Nederlands</h1>
+  <p>Alles uit les 1, 2 en 3 · Everything from lessons 1, 2 and 3</p>
 </header>
+<nav id="nav"></nav>
+<main id="main"></main>
 
-<div class="mswitch" id="mswitch" role="group" aria-label="Wat wil je zien?">
-  <button type="button" data-mview="wb" aria-pressed="true">Bord</button>
-  <button type="button" data-mview="sl" aria-pressed="false">Slides</button>
-  <button type="button" data-mview="both" aria-pressed="false">Allebei</button>
-</div>
-<main class="ws" id="ws">
-  <!-- WHITEBOARD (links) -->
-  <section class="panel" id="pWb">
-    <div class="phead">
-      <div class="seg" role="group" aria-label="Bord of canvas">
-        <button type="button" data-mode="wb" aria-pressed="true">Whiteboard</button>
-        <button type="button" data-mode="cv" aria-pressed="false">Canvas</button>
-      </div>
-      <div class="cvbar" id="cvBar" hidden>
-        <button class="ib" data-cmd="h" type="button" title="Kop">H</button>
-        <button class="ib" data-cmd="p" type="button" title="Gewone tekst">¶</button>
-        <button class="ib" data-cmd="li" type="button" title="Opsomming">&bull;</button>
-        <button class="ib" data-cmd="bold" type="button" title="Vet (Ctrl+B)"><b>B</b></button>
-        <button class="ib" data-cmd="italic" type="button" title="Schuin (Ctrl+I)"><i style="font-family:Georgia,serif">I</i></button>
-        <button class="ib" data-cmd="mark" type="button" title="Markeren"><span style="background:#ffe98a;padding:0 4px;border-radius:3px">A</span></button>
-        <button class="ib" data-cmd="red" type="button" title="Rood (verbetering)"><span style="color:#d0523a">A</span></button>
-        <button class="ib" data-cmd="clear" type="button" title="Opmaak weghalen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5h11M10 5l-3 14M4 20l16-16"/></svg></button>
-        <button class="ib" data-cmd="copy" type="button" title="Tekst kopiëren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg></button>
-        <button class="ib" data-cmd="wipe" data-teacher type="button" title="Canvas leegmaken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
-      </div>
-      <div class="pnav" id="wbNav">
-        <button class="ib" id="wbPrev" type="button" title="Vorig bord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <span class="pinfo" id="wbInfo">1 / 1</span>
-        <button class="ib" id="wbNext" type="button" title="Volgend bord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
-        <button class="ib" id="wbAdd" data-teacher type="button" title="Nieuw bord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button>
-      </div>
-      <button class="ib" data-close="pWb" type="button" title="Whiteboard sluiten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </div>
-    <div class="pbody" id="wbBody">
-      <div class="surf" id="wbSurf" data-aspect="1.3333">
-        <canvas class="bc"></canvas><canvas class="dc"></canvas>
-        <div class="msg" id="wbMsg"><div><b>Whiteboard</b>Teken met de pen, of kies <b style="display:inline;font-size:inherit">T</b> onderin om te typen.</div></div>
-      </div>
-    </div>
-    <div class="pbody cvbody" id="cvBody" hidden>
-      <div class="cvpage" id="cvPage"><div class="cv" id="cv" contenteditable="true" spellcheck="false" data-ph="Typ hier samen. Bijvoorbeeld een oefening, en je leerling schrijft eronder."></div></div>
-    </div>
-  </section>
-
-  <div class="split" id="split" title="Sleep om de verdeling te veranderen"></div>
-
-  <!-- SLIDES (rechts) -->
-  <section class="panel" id="pSl">
-    <div class="phead">
-      <span class="ptitle">Slides</span>
-      <label class="btn sm" data-teacher title="Open een pdf van je PowerPoint">Pdf openen<input type="file" id="pdfIn" accept="application/pdf" hidden></label>
-      <div class="pnav">
-        <button class="ib" id="slPrev" data-teacher type="button" title="Vorige slide (pijltje links)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <span class="pinfo" id="slInfo">-</span>
-        <button class="ib" id="slNext" data-teacher type="button" title="Volgende slide (pijltje rechts)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
-      </div>
-      <button class="ib" data-close="pSl" type="button" title="Slides sluiten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </div>
-    <div class="pbody" id="slBody">
-      <div class="surf" id="slSurf" data-aspect="1.7778">
-        <canvas class="bc"></canvas><canvas class="dc"></canvas>
-        <div class="msg" id="slMsg">
-          <div data-teacher><b>Nog geen slides</b>Klik op "Pdf openen". Maak de pdf in PowerPoint via Bestand, Opslaan als, PDF.</div>
-          <div data-student hidden><b>Slides</b>Hier verschijnen de slides van je docent.</div>
-        </div>
-        <span class="loading" id="loading" hidden>Slide laden...</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="ws-empty" id="wsEmpty" hidden><div><b>Alles is dicht.</b><br>Open het whiteboard of de slides onderin.</div></div>
-</main>
-
-<nav class="dock" aria-label="Lesbediening">
-  <div class="grp">
-    <button class="db" id="micBtn" type="button" title="Microfoon aan of uit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-    <button class="db" id="camBtn" type="button" title="Camera aan of uit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></button>
-    <button class="db" id="vidBtn" type="button" aria-pressed="true" title="Videovenster tonen of verbergen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><rect x="11" y="10" width="8" height="6" rx="1"/></svg><span class="lbl">Video</span></button>
-  </div>
-  <div class="grp" id="tools">
-    <button class="db" data-tool="pen" data-color="#0f2a2e" aria-pressed="true" title="Pen zwart"><span class="sw" style="background:#0f2a2e;box-shadow:0 0 0 1px #e6eeeb"></span></button>
-    <button class="db" data-tool="pen" data-color="#d0523a" aria-pressed="false" title="Pen rood"><span class="sw" style="background:#d0523a"></span></button>
-    <button class="db" data-tool="pen" data-color="#1c8a83" aria-pressed="false" title="Pen groen"><span class="sw" style="background:#1c8a83"></span></button>
-    <button class="db" data-tool="pen" data-color="#2f6fd6" aria-pressed="false" title="Pen blauw"><span class="sw" style="background:#2f6fd6"></span></button>
-    <button class="db" data-tool="hl" aria-pressed="false" title="Markeerstift"><span class="sw" style="background:#ffe14d"></span></button>
-    <button class="db" data-tool="text" aria-pressed="false" title="Typen (T)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg></button>
-    <button class="db" data-tool="eraser" aria-pressed="false" title="Gum (E)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H8l-5-5 10-10 8 8-6 7"/><path d="M6 12l6 6"/></svg></button>
-    <button class="db" id="undo" type="button" title="Ongedaan maken (Ctrl+Z)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
-    <span class="vsep" data-teacher></span>
-    <label class="db" data-teacher title="Mag de leerling tekenen en typen?"><input type="checkbox" id="allowDraw" checked style="accent-color:#53beb3;width:15px;height:15px;margin:0"><span class="lbl">Leerling tekent</span></label>
-  </div>
-  <div class="grp">
-    <button class="db" data-panel="pWb" aria-pressed="true" title="Whiteboard tonen of verbergen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21l4-4 4 4M7 12l3-3 3 2 4-4"/></svg><span class="lbl">Whiteboard</span></button>
-    <button class="db" data-panel="pSl" aria-pressed="true" title="Slides tonen of verbergen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v4M8 21h8"/></svg><span class="lbl">Slides</span></button>
-    <button class="db" id="notesBtn" data-teacher aria-pressed="false" title="Notities per leerling"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></svg><span class="lbl">Notities</span></button>
-    <button class="db leave" id="leaveBtn" type="button" title="Les verlaten" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 15c5-5 13-5 18 0l-2.5 2.5-3-1.5v-2.5a10 10 0 0 0-7 0V16l-3 1.5z"/></svg></button>
-  </div>
-</nav>
-
-<!-- VIDEO -->
-<div class="vwin" id="vwin">
-  <div class="vhead" id="vhead">
-    <span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg><span id="vTitle">Video</span></span>
-    <button class="ib" id="vSize" type="button" title="Groter of kleiner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
-    <button class="ib" id="selfBtn" type="button" aria-pressed="false" title="Mezelf ook tonen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
-    <button class="ib" id="vClose" type="button" title="Video verbergen (de les loopt door)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
-  <div class="vbody" id="vbody">
-    <div class="remotes" id="remotes"></div>
-    <video class="selfv" id="selfV" muted playsinline autoplay hidden></video>
-    <div class="vph" id="vph"><b id="vHead">Nog niet verbonden</b><span id="vMsg">Klik bovenaan op "Start de les".</span></div>
-  </div>
-</div>
-
-<!-- NOTITIES -->
-<aside class="drawer" id="drawer" hidden data-teacher>
-  <div class="nhead">
-    <select class="inp" id="studentSel" aria-label="Leerling"></select>
-    <button class="btn sm" id="addStudent" type="button">+ Leerling</button>
-    <button class="ib" id="drawerClose" type="button" title="Notities sluiten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="today" aria-selected="true" type="button">Vandaag</button>
-    <button class="tab" role="tab" data-tab="words" aria-selected="false" type="button">Woorden</button>
-    <button class="tab" role="tab" data-tab="hw" aria-selected="false" type="button">Huiswerk</button>
-    <button class="tab" role="tab" data-tab="hist" aria-selected="false" type="button">Eerder</button>
-    <button class="tab" role="tab" data-tab="prof" aria-selected="false" type="button">Profiel</button>
-  </div>
-  <div class="pane" data-pane="today">
-    <div class="row"><span class="lab" id="todayLbl">Les van vandaag</span><span class="saved" id="saved"></span></div>
-    <textarea class="inp" id="nToday" style="flex:1;min-height:160px" placeholder="Wat deden we, welke fouten vielen op, waar was hij of zij trots op?"></textarea>
-  </div>
-  <div class="pane" data-pane="words" hidden>
-    <span class="lab">Nieuwe woorden van vandaag</span>
-    <form class="row" id="wordForm"><input class="inp" id="wNl" placeholder="woord" autocomplete="off"><input class="inp" id="wUit" placeholder="uitleg" autocomplete="off"><button class="btn sm" type="submit">+</button></form>
-    <ul class="words" id="wordList"></ul>
-    <p class="muted" id="allWordsInfo"></p>
-  </div>
-  <div class="pane" data-pane="hw" hidden>
-    <span class="lab">Huiswerk voor de volgende les</span>
-    <textarea class="inp" id="nHw" style="flex:1;min-height:130px" placeholder="Bijvoorbeeld: schrijf 5 zinnen over je weekend met het perfectum"></textarea>
-    <span class="lab" style="margin-top:6px">Huiswerk van vorige keer</span>
-    <p class="muted" id="prevHw">-</p>
-  </div>
-  <div class="pane" data-pane="hist" hidden><span class="lab">Eerdere lessen</span><div class="hist" id="hist"></div></div>
-  <div class="pane" data-pane="prof" hidden>
-    <span class="lab">Naam</span><input class="inp" id="pName">
-    <span class="lab">Niveau</span><select class="inp" id="pLevel"><option>A0</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select>
-    <span class="lab">Doel</span><input class="inp" id="pGoal" placeholder="Bijvoorbeeld: inburgeringsexamen A2 in maart">
-    <span class="lab">Over deze leerling</span><textarea class="inp" id="pAbout" placeholder="Interesses, fouten die steeds terugkomen, wat werkt goed"></textarea>
-    <button class="btn sm ghost" id="delStudent" type="button" style="align-self:flex-start;color:var(--coral)">Leerling verwijderen</button>
-  </div>
-  <div class="nfoot">
-    <button class="btn sm" id="report" type="button">Lesverslag kopiëren</button>
-    <button class="btn sm ghost" id="exportBtn" type="button">Back-up</button>
-    <label class="btn sm ghost">Terugzetten<input type="file" id="importIn" accept="application/json" hidden></label>
-  </div>
-</aside>
-
-<div class="ov" id="joinOv" hidden>
-  <form class="dlg" id="joinForm">
-    <h2>Naar de les</h2>
-    <p class="muted">Vul je naam in. Je browser vraagt daarna om je camera en microfoon.</p>
-    <input class="inp" id="joinName" placeholder="Je naam" autocomplete="name" required>
-    <button class="btn primary" type="submit">Naar de les</button>
-  </form>
-</div>
-<div class="ov" id="newOv" hidden>
-  <form class="dlg" id="newForm">
-    <h2>Nieuwe leerling</h2>
-    <input class="inp" id="newName" placeholder="Naam" required>
-    <select class="inp" id="newLevel"><option>A0</option><option selected>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select>
-    <input class="inp" id="newGoal" placeholder="Doel (optioneel)">
-    <div class="row"><button class="btn primary" type="submit">Toevoegen</button><button class="btn ghost" type="button" id="newCancel">Annuleren</button></div>
-  </form>
-</div>
-<div class="toast" id="toast" hidden></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
-/* ==========================================================================
-   INSTELLINGEN
-   Geen account nodig: de video gaat rechtstreeks van browser naar browser.
-   Docent:   learnwithscip.com/klas.html  ->  klik "Start de les", dan "Link voor leerling"
-   Leerling: opent die link (met ?rol=leerling&kamer=...)
-   TURN_SERVERS: optioneel. Als een leerling op een streng netwerk zit en de video niet
-   verbindt, kun je hier later gratis TURN-gegevens plakken (bijvoorbeeld van metered.ca).
-   ========================================================================== */
-var TEACHER_NAME = "Scip";
-var TURN_SERVERS = [
-  // ExpressTURN (gratis tot 1000 GB per maand): de gewone route als een directe verbinding niet lukt
-  {urls:["turn:free.expressturn.com:3478?transport=udp", "turn:free.expressturn.com:3478?transport=tcp"], username:"000000002109324976", credential:"WInfYKuL0ru79Uz2lJfFYzmYHYw="},
-  // Metered (gratis 500 MB per maand): alleen als reserve via poort 443, voor netwerken die 3478 blokkeren
-  {urls:"turns:global.relay.metered.ca:443?transport=tcp", username:"484db6013e10bf56cafcea5b", credential:"9aX1xszJagXLyrep"}
+/* ---------- data ---------- */
+const WORDS=[
+// les 1
+["moeilijk","difficult",1],["makkelijk","easy",1],["vervoegen","to conjugate",1],["de vervoeging","the conjugation",1],["de structuur","the structure",1],["de invloed","the influence",1],["de toekomst","the future",1],["het verleden","the past",1],["het onderwerp","the subject",1],["het werkwoord","the verb",1],["het voorbeeld","the example",1],["voltooien","to complete",1],["bakken","to bake, to fry",1],["ontdekken","to discover",1],
+// les 2
+["vorig / afgelopen","last, past (vorige week)",2],["volgend / aankomend","next, upcoming",2],["druk","busy",2],["rustig","calm, quiet",2],["het verschil","the difference",2],["tegenwoordig","nowadays",2],["zenuwachtig / nerveus","nervous",2],["het enkelvoud","the singular",2],["het meervoud","the plural",2],["het feest","the party",2],["de verjaardag","the birthday",2],["jarig zijn","to have your birthday",2],["feliciteren","to congratulate",2],["dansen","to dance",2],["de dans","the dance",2],["raar","strange, weird",2],["grappig","funny",2],["saai","boring",2],["net","just (a moment ago)",2],["nog","still, yet",2],["betekenen","to mean",2],["de gootsteen","the (kitchen) sink",2],["beledigend","offensive, insulting",2],["de kring","the circle",2],["het voegwoord","the conjunction",2],
+// les 3
+["beleefd","polite",3],["onbeleefd","rude, impolite",3],["het verzoek","the request",3],["de indruk","the impression",3],["de intake","the intake (entry test)",3],["de afspraak","the appointment",3],["de aanhef","the opening line (of a letter)",3],["de afsluiting","the closing",3],["Geachte heer, mevrouw,","Dear Sir or Madam,",3],["Met vriendelijke groet,","Kind regards,",3],["Alvast bedankt","Thanks in advance",3],["het advies","the advice",3],["het alternatief","the alternative",3],["de verhuurder","the landlord",3],["kapot","broken",3]
 ];
-var TURN_URL     = "";   // of: de link van metered.ca, zoiets als "https://jouwnaam.metered.live/api/v1/turn/credentials?apiKey=..."
-/* ========================================================================== */
+// [inf, vt ev, vt mv, vd, h/z, english, R/S]
+const VERBS=[
+["werken","werkte","werkten","gewerkt","h","to work","R"],["wonen","woonde","woonden","gewoond","h","to live","R"],["vieren","vierde","vierden","gevierd","h","to celebrate","R"],["dansen","danste","dansten","gedanst","h","to dance","R"],["ontdekken","ontdekte","ontdekten","ontdekt","h","to discover","R"],["verhuizen","verhuisde","verhuisden","verhuisd","z","to move house","R"],["voltooien","voltooide","voltooiden","voltooid","h","to complete","R"],["betekenen","betekende","betekenden","betekend","h","to mean","R"],["maken","maakte","maakten","gemaakt","h","to make","R"],["koken","kookte","kookten","gekookt","h","to cook","R"],["fietsen","fietste","fietsten","gefietst","h","to cycle","R"],["spelen","speelde","speelden","gespeeld","h","to play","R"],["leren","leerde","leerden","geleerd","h","to learn","R"],["bellen","belde","belden","gebeld","h","to call","R"],["wachten","wachtte","wachtten","gewacht","h","to wait","R"],["praten","praatte","praatten","gepraat","h","to talk","R"],["luisteren","luisterde","luisterden","geluisterd","h","to listen","R"],["wandelen","wandelde","wandelden","gewandeld","h","to walk","R"],["leven","leefde","leefden","geleefd","h","to live (be alive)","R"],["betalen","betaalde","betaalden","betaald","h","to pay","R"],["vertellen","vertelde","vertelden","verteld","h","to tell","R"],["ontmoeten","ontmoette","ontmoetten","ontmoet","h","to meet","R"],["gebruiken","gebruikte","gebruikten","gebruikt","h","to use","R"],["proberen","probeerde","probeerden","geprobeerd","h","to try","R"],["studeren","studeerde","studeerden","gestudeerd","h","to study","R"],["missen","miste","misten","gemist","h","to miss","R"],["hopen","hoopte","hoopten","gehoopt","h","to hope","R"],["horen","hoorde","hoorden","gehoord","h","to hear","R"],["zetten","zette","zetten","gezet","h","to put","R"],["antwoorden","antwoordde","antwoordden","geantwoord","h","to answer","R"],["verdienen","verdiende","verdienden","verdiend","h","to earn","R"],["sturen","stuurde","stuurden","gestuurd","h","to send","R"],["schilderen","schilderde","schilderden","geschilderd","h","to paint","R"],["kamperen","kampeerde","kampeerden","gekampeerd","h","to camp","R"],
+["beginnen","begon","begonnen","begonnen","z","to begin","S"],["blijven","bleef","bleven","gebleven","z","to stay","S"],["brengen","bracht","brachten","gebracht","h","to bring","S"],["denken","dacht","dachten","gedacht","h","to think","S"],["doen","deed","deden","gedaan","h","to do","S"],["drinken","dronk","dronken","gedronken","h","to drink","S"],["eten","at","aten","gegeten","h","to eat","S"],["gaan","ging","gingen","gegaan","z","to go","S"],["geven","gaf","gaven","gegeven","h","to give","S"],["hebben","had","hadden","gehad","h","to have","S"],["helpen","hielp","hielpen","geholpen","h","to help","S"],["kijken","keek","keken","gekeken","h","to watch","S"],["komen","kwam","kwamen","gekomen","z","to come","S"],["kopen","kocht","kochten","gekocht","h","to buy","S"],["krijgen","kreeg","kregen","gekregen","h","to get","S"],["lezen","las","lazen","gelezen","h","to read","S"],["liggen","lag","lagen","gelegen","h","to lie (down)","S"],["nemen","nam","namen","genomen","h","to take","S"],["schrijven","schreef","schreven","geschreven","h","to write","S"],["slapen","sliep","sliepen","geslapen","h","to sleep","S"],["sluiten","sloot","sloten","gesloten","h","to close","S"],["spreken","sprak","spraken","gesproken","h","to speak","S"],["staan","stond","stonden","gestaan","h","to stand","S"],["vertrekken","vertrok","vertrokken","vertrokken","z","to leave","S"],["vinden","vond","vonden","gevonden","h","to find","S"],["vragen","vroeg","vroegen","gevraagd","h","to ask","S"],["weten","wist","wisten","geweten","h","to know","S"],["worden","werd","werden","geworden","z","to become","S"],["zien","zag","zagen","gezien","h","to see","S"],["zijn","was","waren","geweest","z","to be","S"],["zingen","zong","zongen","gezongen","h","to sing","S"],["zitten","zat","zaten","gezeten","h","to sit","S"],["zoeken","zocht","zochten","gezocht","h","to look for","S"],["bakken","bakte","bakten","gebakken","h","to bake","S"],["wassen","waste","wasten","gewassen","h","to wash","S"],["lachen","lachte","lachten","gelachen","h","to laugh","S"]
+];
+const KOF="tkfscp".split("");
+const HZ=[["Vorig jaar ___ ik naar Almere verhuisd.","ben"],["Wij ___ de hele avond gedanst.","hebben"],["___ jij al eens in Brazilië geweest?","Ben"],["Mijn zus ___ een taart gebakken.","heeft"],["Na het feest ___ we nog lang gebleven.","zijn"],["Sanne ___ dertig geworden.","is"],["___ je de film al gezien?","Heb"],["Ik ___ een mooi cadeau gekregen.","heb"],["Gisteren ___ ik naar de markt gegaan.","ben"],["De cursus ___ in februari begonnen.","is"],["Ik ___ de huisarts gebeld.","heb"],["Hoe laat ___ de trein vertrokken?","is"]];
+const HZOPTS=["heb","hebt","heeft","hebben","ben","bent","is","zijn"];
+const VT=[["Gisteren ___ ik mijn verjaardag. (vieren)","vierde"],["Vorige week ___ we in een grote kring. (zitten)","zaten"],["Ik ___ aan mijn familie in Brazilië. (denken)","dacht"],["Mijn collega ___ dertig. (worden)","werd"],["Afgelopen weekend ___ ik een grappige film. (kijken)","keek"],["We ___ tot middernacht op het feest. (blijven)","bleven"],["Vanochtend ___ ik iets raars in de gootsteen. (zien)","zag"],["Vroeger ___ ik in Fortaleza. (wonen)","woonde"],["Op het feest ___ iedereen. (dansen)","danste"],["Ik ___ een cadeau. (krijgen)","kreeg"],["We ___ een uur op de bus. (wachten)","wachtten"],["Zij ___ een lange mail. (schrijven)","schreef"]];
+const VD=[["Ik heb gisteren hard ___. (werken)","gewerkt"],["We hebben een mooi meer ___. (ontdekken)","ontdekt"],["Zij is vorig jaar ___. (verhuizen)","verhuisd"],["Heb je mijn bericht ___? (zien)","gezien"],["Ik heb lang over de vraag ___. (denken)","gedacht"],["Mijn zus heeft een taart ___. (bakken)","gebakken"],["We zijn thuis ___. (blijven)","gebleven"],["Hij heeft zijn verjaardag ___. (vieren)","gevierd"],["Ik ben op een Nederlandse verjaardag ___. (zijn)","geweest"],["Heb je de rekening al ___? (betalen)","betaald"],["We hebben een uur ___. (praten)","gepraat"],["Ik heb de VU een mail ___. (sturen)","gestuurd"]];
+const VW=[["Ik woon in Almere, ___ ik werk in Amsterdam.","maar"],["Ik neem een paraplu mee, ___ het vandaag regent.","omdat"],["Ik ben moe, ___ ik ga vroeg naar bed.","dus"],["Ik bel je morgen, ___ ik tijd heb.","als"],["Ik kom niet, ___ ik heb geen tijd.","want"],["Ik denk ___ Mia de expositie mooi vindt.","dat"],["___ ik binnenkwam, zag ik iets geks.","Toen"],["Ik schilder ___ ik speel kalimba.","en"],["Ik was zenuwachtig, ___ ik kende niemand.","want"],["Ik vond het saai, ___ iedereen op zijn stoel bleef zitten.","omdat"]];
+const VWOPTS=["en","maar","want","dus","omdat","als","dat","toen"];
+const ZOUMC=[
+{p:"Je wilt beleefd om hulp vragen.",o:["Zou u mij kunnen helpen?","Zou u mij helpen kunnen?","U zou mij kunnen helpen?"],a:0},
+{p:"Je wilt een afspraak maken.",o:["Ik zou graag maken een afspraak.","Ik zou graag een afspraak willen maken.","Ik graag zou een afspraak willen maken."],a:1},
+{p:"Je wilt informatie over de cursus.",o:["Zou u mij informatie over de cursus kunnen sturen?","Zou u kunnen sturen mij informatie?","Zou u mij informatie sturen kunnen?"],a:0},
+{p:"Dinsdag kan niet. Je stelt een andere dag voor.",o:["Zou donderdag ook kunnen?","Zou ook kunnen donderdag?","Donderdag zou ook kunnen?"],a:0},
+{p:"Wat is het meest beleefd?",o:["Stuur mij de documenten.","Kunt u mij de documenten sturen?","Zou u mij de documenten kunnen sturen?"],a:2},
+{p:"Wij willen graag meedoen.",o:["Wij zou graag willen meedoen.","Wij zouden graag willen meedoen.","Wij zouden graag meedoen willen."],a:1},
+{p:"Je geeft een advies.",o:["Ik zou eerst de website lezen.","Ik zou lezen eerst de website.","Ik zou eerst lezen de website."],a:0},
+{p:"Je vraagt toestemming.",o:["Zou ik een vraag stellen mogen?","Zou ik een vraag mogen stellen?","Zou ik mogen een vraag stellen?"],a:1}
+];
+const TILES_ZIN=[
+{t:"omdat",s:"Ik kom niet, omdat ik ziek ben.",w:["Ik kom niet,","omdat","ik","ziek","ben."]},
+{t:"want",s:"Ik kom niet, want ik ben ziek.",w:["Ik kom niet,","want","ik","ben","ziek."]},
+{t:"omdat",s:"Ik leer Nederlands, omdat ik aan de VU wil studeren.",w:["Ik leer Nederlands,","omdat","ik","aan de VU","wil","studeren."]},
+{t:"als",s:"Ik bel je, als ik thuis ben.",w:["Ik bel je,","als","ik","thuis","ben."]},
+{t:"dat",s:"Ik denk dat de cursus in februari begint.",w:["Ik denk","dat","de cursus","in februari","begint."]},
+{t:"omdat",s:"Ik ben moe, omdat ik hard heb gewerkt.",w:["Ik ben moe,","omdat","ik","hard","heb","gewerkt."],alt:["Ik ben moe, omdat ik hard gewerkt heb."]},
+{t:"toekomst",s:"Ik ga over een jaar naar Brazilië reizen.",w:["Ik","ga","over een jaar","naar Brazilië","reizen."]},
+{t:"voltooide tijd",s:"Gisteren heb ik mijn verjaardag gevierd.",w:["Gisteren","heb","ik","mijn verjaardag","gevierd."]},
+{t:"verleden tijd",s:"Vorige maand woonde ik nog in Fortaleza.",w:["Vorige maand","woonde","ik","nog","in Fortaleza."]}
+];
+const TILES_VRAAG=[
+{t:"vraag",s:"Wat heb je gisteren gedaan?",w:["Wat","heb","je","gisteren","gedaan?"]},
+{t:"vraag",s:"Wanneer ben je naar Nederland gekomen?",w:["Wanneer","ben","je","naar Nederland","gekomen?"]},
+{t:"vraag",s:"Heb je de film al gezien?",w:["Heb","je","de film","al","gezien?"]},
+{t:"vraag",s:"Ben je al eens in Brazilië geweest?",w:["Ben","je","al eens","in Brazilië","geweest?"]},
+{t:"vraag",s:"Waar woonde je vroeger?",w:["Waar","woonde","je","vroeger?"]},
+{t:"vraag",s:"Wat wilde je worden toen je klein was?",w:["Wat","wilde","je","worden","toen je klein was?"]},
+{t:"vraag",s:"Welk boek heb je het laatst gelezen?",w:["Welk boek","heb","je","het laatst","gelezen?"]},
+{t:"vraag",s:"Hoe lang heb je in Fortaleza gewoond?",w:["Hoe lang","heb","je","in Fortaleza","gewoond?"]}
+];
+const TILES_ZOU=[
+{t:"zou",s:"Ik zou graag een afspraak willen maken.",w:["Ik","zou","graag","een afspraak","willen","maken."]},
+{t:"zou",s:"Zou u mij kunnen bellen?",w:["Zou","u","mij","kunnen","bellen?"]},
+{t:"zou",s:"Zou donderdag ook kunnen?",w:["Zou","donderdag","ook","kunnen?"]},
+{t:"zou",s:"Zou u mij de informatie kunnen sturen?",w:["Zou","u","mij","de informatie","kunnen","sturen?"]},
+{t:"zou",s:"Ik zou graag meer over de intake willen weten.",w:["Ik","zou","graag","meer","over de intake","willen","weten."],alt:["Ik zou graag meer willen weten over de intake."]},
+{t:"zou",s:"Zou ik een vraag mogen stellen?",w:["Zou","ik","een vraag","mogen","stellen?"]},
+{t:"zou",s:"Zou u mij kunnen vertellen wanneer de intake is?",w:["Zou","u","mij","kunnen","vertellen","wanneer","de intake","is?"]}
+];
 
-(function(){
-"use strict";
-var $ = function(id){ return document.getElementById(id); };
-var params = new URLSearchParams(location.search);
-var isT = params.get("rol") !== "leerling";
-document.body.classList.add(isT ? "teacher" : "student");
-$("roleLabel").textContent = isT ? "docent" : "leerling";
-document.querySelectorAll("[data-teacher]").forEach(function(el){ if(!isT) el.hidden = true; });
-document.querySelectorAll("[data-student]").forEach(function(el){ el.hidden = isT; });
-if(!isT){ $("joinBtn").textContent = "Naar de les"; $("drawer").remove(); }
+/* ---------- helpers ---------- */
+const norm=s=>s.toLowerCase().replace(/[.,!?]/g,"").replace(/\s+/g," ").trim();
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const el=(tag,attrs={},html="")=>{const e=document.createElement(tag);for(const k in attrs){if(k==="on")for(const ev in attrs.on)e.addEventListener(ev,attrs.on[ev]);else e.setAttribute(k,attrs[k])}if(html)e.innerHTML=html;return e};
+const store={get(k){try{return JSON.parse(localStorage.getItem("dar_"+k))}catch(e){return null}},set(k,v){try{localStorage.setItem("dar_"+k,JSON.stringify(v))}catch(e){}}};
+function saveBest(id,n,total){const b=store.get("best")||{};const pct=Math.round(100*n/total);if(!b[id]||pct>b[id])b[id]=pct;store.set("best",b)}
 
-function toast(m){ var t = $("toast"); t.textContent = m; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(function(){ t.hidden = true; }, 2200); }
-function uid(){ return Math.random().toString(36).slice(2, 9); }
-function store(k, v){ try{ if(v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); }catch(e){ return null; } }
-function copy(text, msg){ (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function(){ toast(msg); }).catch(function(){ window.prompt("Kopieer dit:", text); }); }
+const SECTIONS=[
+{id:"start",label:"Start",build:buildHome},
+{id:"woorden",label:"Woorden",d:"Flashcards met alle woorden",l:"les 1-3",build:buildFlash},
+{id:"kofschip",label:"'t kofschip",d:"Kies -te of -de, zo snel als je kunt",l:"les 3",nw:1,build:buildKof},
+{id:"werkwoorden",label:"Werkwoorden",d:"Vervoeg: verleden tijd, deelwoord, h/z",l:"les 1-3",build:buildVerbs},
+{id:"hebben-zijn",label:"Hebben of zijn",d:"Kies de goede vorm",l:"les 1",build:buildHZ},
+{id:"verleden-tijd",label:"Verleden tijd",d:"Vul de verleden tijd in",l:"les 2",build:r=>buildType(r,"verleden-tijd",VT,"Verleden tijd","Vul de verleden tijd in. Let op: één werkwoord, geen hebben of zijn!","<b>Verleden tijd = één werkwoord.</b> Regelmatig: stam + te/de ('t kofschip). Onregelmatig: leren. <i>Ik woonde in Fortaleza. Ik keek een film.</i>")},
+{id:"voltooid",label:"Voltooid deelwoord",d:"Vul het voltooid deelwoord in",l:"les 2",build:r=>buildType(r,"voltooid",VD,"Voltooid deelwoord","Vul het voltooid deelwoord in.","<b>ge + stam + t/d.</b> 't kofschip → -t, anders -d. Geen ge- bij be-, ver-, ont-: <i>ontdekt, betaald</i>. Stam op t of d: geen extra letter: <i>gepraat</i>.")},
+{id:"vragen",label:"Vragen",d:"Bouw vragen in de verleden tijd",l:"les 3",nw:1,build:r=>buildTiles(r,"vragen",TILES_VRAAG,"Vragen in de verleden tijd","Klik de stukjes in de goede volgorde.","<b>Ja/nee-vraag:</b> heb/ben + je + … + deelwoord? <i>Heb je de film gezien?</i><br><b>Met vraagwoord:</b> vraagwoord + heb/ben + je + … + deelwoord? <i>Wat heb je gedaan?</i><br>Let op: <b>heb je</b> zonder t!")},
+{id:"voegwoorden",label:"Voegwoorden",d:"Kies het goede voegwoord",l:"les 2",build:buildVW},
+{id:"zou",label:"Zou",d:"Beleefd vragen met zou + infinitief",l:"les 3",nw:1,build:buildZou},
+{id:"zinnen",label:"Zinnen bouwen",d:"Voegwoorden, tijden en toekomst",l:"les 2",build:r=>buildTiles(r,"zinnen",TILES_ZIN,"Zinnen bouwen","Klik de stukjes in de goede volgorde. Klik op een stukje in de zin om het terug te zetten.","Na <b>omdat, als, dat</b> gaat het werkwoord naar het eind. Bij de <b>toekomst</b>: gaan op plek 2, het hele werkwoord aan het eind.")}
+];
 
-/* =================================================================== VERBINDING */
-var peer = null, local = null, conns = {}, calls = {}, tConn = null, tCall = null;
-var queue = [], sending = false, joinedAt = 0, mic = true, cam = true, selfView = false, retryT = null, myName = "";
-var ROOM = isT ? (store("klas-kamer") || (function(){ var r = Math.random().toString(36).slice(2, 8); store("klas-kamer", r); return r; })()) : (params.get("kamer") || "").replace(/[^a-z0-9]/gi, "");
-var TEACHER_ID = "learnwithscip-klas-" + ROOM;
-var ICE = {iceServers:[{urls:"stun:stun.l.google.com:19302"}, {urls:"stun:stun1.l.google.com:19302"}].concat(TURN_SERVERS)};
-
-function online(){ return isT ? Object.keys(conns).some(function(id){ return conns[id].open; }) : !!(tConn && tConn.open); }
-function send(m){ if(!online()) return; queue.push(m); if(!sending) pump(); }
-function pump(){
-  if(!queue.length || !online()){ sending = false; if(!online()) queue = []; return; }
-  sending = true; var m = queue.shift();
-  deliver(m, null);
-  setTimeout(pump, (m.t === "chunk" || m.t === "big") ? 4 : 0);
-}
-function deliver(m, except){
-  if(isT){ Object.keys(conns).forEach(function(id){ var c = conns[id]; if(c.open && id !== except){ try{ c.send(m); }catch(e){} } }); }
-  else if(tConn && tConn.open){ try{ tConn.send(m); }catch(e){} }
-}
-function onMessage(m){
-  if(!m || !m.t) return;
-  switch(m.t){
-    case "hello": if(isT) sendState(); break;
-    case "slide": incomingSlide(m); break;
-    case "chunk": incomingChunk(m); break;
-    case "show": SL.show(m.k, true); markNew("sl"); break;
-    case "wb": WB.list = m.list; WB.show(m.k, true); break;
-    case "obj": remoteObj(m); break;
-    case "erase": removeObj(m.k, m.id, true); break;
-    case "clear": clearKey(m.k, true); break;
-    case "perm": setPerm(m.draw, true); break;
-    case "big": incomingBig(m); break;
-    case "mode": setMode(m.m, true); markNew("wb"); break;
-    case "cvb": cvApplyBlock(m); break;
-    case "cvo": cvApplyOrder(m.ids); break;
-  }
-}
-function status(head, msg){
-  var show = !!(head || msg);
-  $("vph").hidden = !show || $("remotes").children.length > 0 && !head;
-  if(head !== undefined) $("vHead").textContent = head || "";
-  if(msg !== undefined) $("vMsg").textContent = msg || "";
-}
-function getMedia(){
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(null);
-  var v = {width:{ideal:640}, height:{ideal:480}, facingMode:"user"}, a = {echoCancellation:true, noiseSuppression:true};
-  return navigator.mediaDevices.getUserMedia({video:v, audio:a})
-    .catch(function(){ return navigator.mediaDevices.getUserMedia({audio:a}); })
-    .catch(function(){ return null; });
-}
-function addRemote(id, stream, name){
-  var box = $("remotes"), safe = String(id).replace(/[^a-z0-9-]/gi, ""), v = box.querySelector('[data-p="' + safe + '"]');
-  if(!v){ v = document.createElement("video"); v.autoplay = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("data-p", safe); box.appendChild(v); }
-  v.srcObject = stream; var p = v.play(); if(p && p.catch) p.catch(function(){ toast("Tik op de video om het geluid aan te zetten"); v.addEventListener("click", function(){ v.play(); }, {once:true}); });
-  if(name) $("vTitle").textContent = name;
-  $("vph").hidden = true;
-}
-function removeRemote(id){
-  var v = $("remotes").querySelector('[data-p="' + String(id).replace(/[^a-z0-9-]/gi, "") + '"]'); if(v) v.remove();
-  if(!$("remotes").children.length){ $("vTitle").textContent = "Video"; status(isT ? "Wachten op je leerling" : "Verbinding weg", isT ? "Je leerling is weg. Zodra die terugkomt, gaat het vanzelf verder." : "We proberen opnieuw te verbinden..."); }
-}
-function watchIce(c, id){
-  var pc = c.peerConnection; if(!pc) return;
-  pc.addEventListener("iceconnectionstatechange", function(){
-    if(pc.iceConnectionState === "failed") status("Geen directe verbinding", (TURN_SERVERS.length || TURN_URL) ? "Ook via de TURN-server lukt het niet. Probeer een ander netwerk." : "Dit netwerk laat geen directe verbinding toe. Een TURN-server lost dit op (zie instellingen bovenaan het bestand).");
-  });
-}
-function afterJoin(){
-  $("joinBtn").hidden = true; $("leaveBtn").hidden = false; showVideo(true);
-  if(local){ $("selfV").srcObject = local; }
-  else toast("Geen camera of microfoon gevonden. Je kunt wel meekijken.");
-}
-
-/* TURN ophalen (alleen als TURN_URL is ingevuld) */
-var turnLoaded = false;
-function loadTurn(){
-  if(turnLoaded || !TURN_URL) return Promise.resolve();
-  return fetch(TURN_URL).then(function(r){ return r.json(); }).then(function(list){
-    if(Array.isArray(list) && list.length){ ICE.iceServers = ICE.iceServers.concat(list); }
-    turnLoaded = true;
-  }).catch(function(){ toast("TURN-server kon niet laden, we proberen het zonder"); });
-}
-/* reserve: als de vaste versie niet laadt, probeer de nieuwste 1.x */
-function ensurePeer(cb){
-  if(window.Peer) return loadTurn().then(function(){ cb(true); });
-  var s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js";
-  s.onload = function(){ loadTurn().then(function(){ cb(!!window.Peer); }); }; s.onerror = function(){ cb(false); };
-  document.head.appendChild(s);
-}
-function startTeacher(){
-  ensurePeer(function(ok){ if(ok) startTeacher2(); else status("Video kan niet laden", "Check je internet en ververs de pagina."); });
-}
-function startTeacher2(){
-  status("Even geduld", "Camera en microfoon aanzetten...");
-  getMedia().then(function(stream){
-    local = stream; afterJoin();
-    peer = new Peer(TEACHER_ID, {config:ICE, debug:0});
-    peer.on("open", function(){ status("Wachten op je leerling", 'Lescode: ' + ROOM + '. Klik op "Link voor leerling" en stuur die link.'); });
-    peer.on("error", function(err){
-      if(err.type === "unavailable-id") status("Les staat al open", "Deze les is al open in een ander tabblad of op een ander apparaat. Sluit die eerst.");
-      else if(err.type === "network" || err.type === "server-error" || err.type === "socket-error") status("Geen verbinding", "Kan de server niet bereiken (" + err.type + "). Check je internet of zet een adblocker uit.");
-      else status("Fout", "Foutcode: " + err.type + ". Ververs de pagina en klik opnieuw op Start de les.");
-    });
-    peer.on("disconnected", function(){ try{ if(peer && !peer.destroyed) peer.reconnect(); }catch(e){} });
-    peer.on("connection", function(conn){
-      conn.on("open", function(){ conns[conn.peer] = conn; if(!joinedAt) joinedAt = Date.now(); });
-      conn.on("data", function(d){ onMessage(d); if(d && d.t && d.t !== "hello") deliver(d, conn.peer); });
-      conn.on("close", function(){ delete conns[conn.peer]; });
-      conn.on("error", function(){ delete conns[conn.peer]; });
-    });
-    peer.on("call", function(c){
-      calls[c.peer] = c;
-      if(local) c.answer(local); else c.answer();
-      var name = c.metadata && c.metadata.naam ? String(c.metadata.naam).slice(0, 40) : "Leerling";
-      c.on("stream", function(s){ addRemote(c.peer, s, name); if(!joinedAt) joinedAt = Date.now(); });
-      c.on("close", function(){ delete calls[c.peer]; removeRemote(c.peer); });
-      watchIce(c, c.peer);
-    });
-  });
-}
-
-function startStudent(name){
-  myName = name;
-  if(!ROOM){ status("Verkeerde link", "Vraag je docent om de link van de les opnieuw te sturen."); return; }
-  ensurePeer(function(ok){ if(ok) startStudent2(); else status("Video kan niet laden", "Check je internet en ververs de pagina."); });
-}
-function startStudent2(){
-  status("Even geduld", "Camera en microfoon aanzetten...");
-  getMedia().then(function(stream){
-    local = stream; afterJoin();
-    peer = new Peer(undefined, {config:ICE, debug:0});
-    peer.on("open", connectTeacher);
-    peer.on("error", function(err){
-      if(err.type === "peer-unavailable"){ status("Je docent is er nog niet", "We zoeken les " + ROOM + " en proberen het elke 5 seconden opnieuw."); retry(); }
-      else if(err.type === "network" || err.type === "server-error" || err.type === "socket-error"){ status("Geen verbinding", "Kan de server niet bereiken (" + err.type + "). Check je internet."); retry(); }
-      else { status("Fout", "Foutcode: " + err.type + ". We proberen het opnieuw."); retry(); }
-    });
-    peer.on("disconnected", function(){ try{ if(peer && !peer.destroyed) peer.reconnect(); }catch(e){} });
-  });
-}
-function retry(){ clearTimeout(retryT); retryT = setTimeout(function(){ if(peer && !peer.destroyed && !online()) connectTeacher(); }, 5000); }
-function connectTeacher(){
-  if(!peer || peer.destroyed) return;
-  status("Verbinden", "Verbinden met les " + ROOM + "...");
-  tConn = peer.connect(TEACHER_ID, {reliable:true, metadata:{naam:myName}});
-  tConn.on("open", function(){ joinedAt = Date.now(); send({t:"hello"}); if(!$("remotes").children.length) status("Verbonden", "Wachten op het beeld van je docent..."); });
-  tConn.on("data", onMessage);
-  setTimeout(function(){ if(tConn) watchIce(tConn, "data"); }, 500);
-  tConn.on("close", function(){ tConn = null; removeRemote("docent"); retry(); });
-  if(local){
-    tCall = peer.call(TEACHER_ID, local, {metadata:{naam:myName}});
-    if(tCall){
-      tCall.on("stream", function(s){ addRemote("docent", s, TEACHER_NAME); });
-      tCall.on("close", function(){ removeRemote("docent"); });
-      watchIce(tCall, "docent");
-    }
-  }
-}
-function leave(){
-  clearTimeout(retryT);
-  Object.keys(conns).forEach(function(id){ try{ conns[id].close(); }catch(e){} });
-  Object.keys(calls).forEach(function(id){ try{ calls[id].close(); }catch(e){} });
-  try{ if(tConn) tConn.close(); if(tCall) tCall.close(); }catch(e){}
-  try{ if(peer) peer.destroy(); }catch(e){}
-  if(local) local.getTracks().forEach(function(t){ t.stop(); });
-  peer = null; local = null; conns = {}; calls = {}; tConn = null; tCall = null; queue = []; joinedAt = 0;
-  $("remotes").innerHTML = ""; $("selfV").srcObject = null; $("vTitle").textContent = "Video";
-  status("Je bent uit de les", isT ? 'Klik op "Start de les" om opnieuw te beginnen.' : 'Klik op "Naar de les" om terug te gaan.');
-  $("joinBtn").hidden = false; $("leaveBtn").hidden = true;
-}
-$("joinBtn").addEventListener("click", function(){
-  if(isT) startTeacher();
-  else { $("joinOv").hidden = false; $("joinName").value = params.get("naam") || ""; $("joinName").focus(); }
+const nav=document.getElementById("nav"),main=document.getElementById("main");
+SECTIONS.forEach(sec=>{
+  const b=el("button",{"data-id":sec.id,on:{click:()=>{location.hash=sec.id}}},sec.label+(sec.nw?'<span class="new">nieuw</span>':""));nav.appendChild(b);
+  const s=el("section",{id:"sec-"+sec.id});main.appendChild(s);sec.el=s;
 });
-$("joinForm").addEventListener("submit", function(e){ e.preventDefault(); $("joinOv").hidden = true; startStudent($("joinName").value.trim() || "Leerling"); });
-$("leaveBtn").addEventListener("click", function(){ if(peer && confirm("Les verlaten?")) leave(); });
-$("copyLink").addEventListener("click", function(){ copy(location.origin + location.pathname + "?rol=leerling&kamer=" + ROOM, "Link gekopieerd, stuur hem naar je leerling"); });
-$("micBtn").addEventListener("click", function(){ if(!local) return; mic = !mic; local.getAudioTracks().forEach(function(t){ t.enabled = mic; }); this.classList.toggle("off", !mic); });
-$("camBtn").addEventListener("click", function(){ if(!local) return; cam = !cam; local.getVideoTracks().forEach(function(t){ t.enabled = cam; }); this.classList.toggle("off", !cam); });
-$("selfBtn").addEventListener("click", function(){
-  selfView = !selfView; this.setAttribute("aria-pressed", selfView ? "true" : "false");
-  $("selfV").hidden = !selfView || !local;
-});
-setInterval(function(){
-  var n = isT ? Object.keys(conns).filter(function(id){ return conns[id].open; }).length : (online() ? 1 : 0);
-  var c = $("conn");
-  var srv = peer && !peer.destroyed && !peer.disconnected && peer.open !== false;
-  c.textContent = isT ? (peer ? (srv ? (n === 1 ? "1 leerling verbonden" : n + " leerlingen verbonden") : "server niet bereikt") : "niet gestart") : (n ? "verbonden met docent" : "niet verbonden");
-  c.title = "Lescode: " + (ROOM || "-");
-  c.classList.toggle("ok", n > 0);
-  if(!joinedAt){ $("timer").textContent = "00:00"; return; }
-  var s = Math.floor((Date.now() - joinedAt) / 1000);
-  $("timer").textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
-}, 1000);
-setInterval(function(){
-  if(peer && !peer.destroyed && peer.disconnected){ try{ peer.reconnect(); }catch(e){} }
-}, 8000);
-if(!isT && !ROOM) status("Verkeerde link", "Vraag je docent om de link van de les opnieuw te sturen.");
-
-/* ---------- videovenster: slepen, verbergen, onthouden ---------- */
-var vw = $("vwin");
-function placeVideo(p){
-  var W = window.innerWidth, H = window.innerHeight;
-  var small = W <= 700;
-  var w = p && p.w ? p.w : (small ? 150 : 340), h = p && p.h ? p.h : (small ? 112 : 255);
-  var maxW = small ? Math.round(W * 0.45) : W - 20;
-  if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
-  vw.style.width = w + "px"; vw.style.height = h + "px";
-  var x = p && p.x !== undefined ? p.x : W - w - (small ? 10 : 24), y = p && p.y !== undefined ? p.y : (small ? 96 : H - h - 100);
-  vw.style.left = Math.max(0, Math.min(W - w, x)) + "px"; vw.style.top = Math.max(0, Math.min(H - h, y)) + "px";
+function show(){
+  const id=(location.hash||"").slice(1);const sec=SECTIONS.find(s=>s.id===id)||SECTIONS[0];
+  SECTIONS.forEach(s=>{s.el.classList.toggle("on",s===sec);nav.querySelector(`[data-id="${s.id}"]`).classList.toggle("on",s===sec)});
+  if(sec.id==="start"||!sec.built){sec.el.innerHTML="";sec.build(sec.el);sec.built=true}
+  const b=nav.querySelector(`[data-id="${sec.id}"]`);if(b.scrollIntoView)b.scrollIntoView({block:"nearest",inline:"center"});
+  window.scrollTo(0,0);
 }
-placeVideo(store("klas-video"));
-function rememberVideo(){ var r = vw.getBoundingClientRect(); store("klas-video", {x:r.left, y:r.top, w:r.width, h:r.height}); }
-(function(){
-  var h = $("vhead"), sx, sy, ox, oy, on = false;
-  h.addEventListener("pointerdown", function(e){
-    if(e.target.closest("button")) return;
-    on = true; h.setPointerCapture(e.pointerId); vw.classList.add("dragging");
-    var r = vw.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
-  });
-  h.addEventListener("pointermove", function(e){
-    if(!on) return;
-    var W = window.innerWidth, H = window.innerHeight, r = vw.getBoundingClientRect();
-    vw.style.left = Math.max(0, Math.min(W - r.width, ox + e.clientX - sx)) + "px";
-    vw.style.top = Math.max(0, Math.min(H - 36, oy + e.clientY - sy)) + "px";
-  });
-  function up(){ if(!on) return; on = false; vw.classList.remove("dragging"); rememberVideo(); }
-  h.addEventListener("pointerup", up); h.addEventListener("pointercancel", up);
-  if(window.ResizeObserver) new ResizeObserver(function(){ if(!vw.hidden) rememberVideo(); }).observe(vw);
-})();
-$("vSize").addEventListener("click", function(){
-  var r = vw.getBoundingClientRect(), W = window.innerWidth, H = window.innerHeight;
-  var big = r.width < Math.min(420, W * 0.6);
-  var w = big ? Math.min(520, W - 20) : (W <= 700 ? 150 : 300), hh = Math.round(w * 0.75) + 32;
-  vw.style.width = w + "px"; vw.style.height = hh + "px";
-  vw.style.left = Math.max(0, Math.min(W - w, r.left)) + "px"; vw.style.top = Math.max(0, Math.min(H - hh, r.top)) + "px";
-  rememberVideo();
-});
-function showVideo(v){ vw.hidden = !v; $("vidBtn").setAttribute("aria-pressed", v ? "true" : "false"); }
-$("vClose").addEventListener("click", function(){ showVideo(false); if(peer) toast("Video verborgen, de les loopt door"); });
-$("vidBtn").addEventListener("click", function(){ showVideo(vw.hidden); });
+window.addEventListener("hashchange",show);
+function scoreLine(root,id,total){const s=el("div",{class:"row",style:"margin:0 0 10px"});const sp=el("span",{class:"score"},`0 van ${total} goed`);s.appendChild(sp);root.appendChild(s);let n=0;return {hit(){n++;sp.textContent=`${n} van ${total} goed`;saveBest(id,n,total)}}}
 
-/* =================================================================== PANELEN */
-var panels = {pWb:true, pSl:true}, saved = store("klas-panels"); if(saved) panels = saved;
-var leftFr = store("klas-split") || 0.5;
-var mqPhone = window.matchMedia("(max-width:700px)"), mqPortrait = window.matchMedia("(max-width:1024px) and (orientation:portrait)");
-var mview = store("klas-mview") || "wb";
-function layout(){
-  var ws = $("ws"), phone = mqPhone.matches, stackIt = phone || mqPortrait.matches;
-  var a = panels.pWb, b = panels.pSl;
-  if(phone){ a = mview !== "sl"; b = mview !== "wb"; }
-  $("pWb").hidden = !a; $("pSl").hidden = !b; $("wsEmpty").hidden = a || b;
-  var both = a && b;
-  $("split").hidden = !both || stackIt;
-  ws.classList.toggle("stack", both && stackIt);
-  ws.style.gridTemplateColumns = both && !stackIt ? (leftFr * 100) + "% 8px 1fr" : "1fr";
-  ws.style.gridTemplateRows = both && stackIt ? "1fr 1fr" : "1fr";
-  document.querySelectorAll("[data-panel]").forEach(function(btn){ btn.setAttribute("aria-pressed", panels[btn.getAttribute("data-panel")] ? "true" : "false"); });
-  document.querySelectorAll("[data-mview]").forEach(function(btn){ btn.setAttribute("aria-pressed", btn.getAttribute("data-mview") === mview ? "true" : "false"); });
-  store("klas-panels", panels);
-  requestAnimationFrame(function(){ WB.fit(); SL.fit(); });
-}
-document.querySelectorAll("[data-mview]").forEach(function(btn){
-  btn.addEventListener("click", function(){ mview = btn.getAttribute("data-mview"); btn.classList.remove("new"); store("klas-mview", mview); layout(); });
-});
-function markNew(which){
-  if(!mqPhone.matches || mview === "both" || mview === which) return;
-  var btn = document.querySelector('[data-mview="' + which + '"]'); if(btn) btn.classList.add("new");
-}
-[mqPhone, mqPortrait].forEach(function(mq){ if(mq.addEventListener) mq.addEventListener("change", layout); });
-document.querySelectorAll("[data-panel]").forEach(function(btn){ btn.addEventListener("click", function(){ var p = btn.getAttribute("data-panel"); panels[p] = !panels[p]; layout(); }); });
-document.querySelectorAll("[data-close]").forEach(function(btn){ btn.addEventListener("click", function(){ panels[btn.getAttribute("data-close")] = false; layout(); }); });
-(function(){
-  var s = $("split"), on = false;
-  s.addEventListener("pointerdown", function(e){ on = true; s.setPointerCapture(e.pointerId); vw.classList.add("dragging"); });
-  s.addEventListener("pointermove", function(e){
-    if(!on) return; var r = $("ws").getBoundingClientRect();
-    leftFr = Math.max(0.22, Math.min(0.78, (e.clientX - r.left - 12) / (r.width - 24)));
-    $("ws").style.gridTemplateColumns = (leftFr * 100) + "% 8px 1fr"; WB.fit(); SL.fit();
+/* ---------- home ---------- */
+function buildHome(root){
+  const best=store.get("best")||{};
+  root.innerHTML=`<h2>Hoi Darlene!</h2><p class="intro">Kies een oefening. Je beste score wordt bewaard in deze browser. <i>Pick an exercise; your best score is saved in this browser.</i></p>`;
+  const g=el("div",{class:"grid"});
+  SECTIONS.filter(s=>s.id!=="start").forEach(s=>{
+    const pct=best[s.id]||0;
+    const c=el("button",{class:"tile-card",on:{click:()=>{location.hash=s.id}}},`<div class="lesson">${s.l}${s.nw?" · nieuw":""}</div><div class="t">${s.label}</div><div class="d">${s.d}</div><div class="bar"><i style="width:${pct}%"></i></div><div class="meta" style="margin-top:4px;font-size:12px">${pct?`beste score: ${pct}%`:"nog niet gedaan"}</div>`);
+    g.appendChild(c);
   });
-  function up(){ if(!on) return; on = false; vw.classList.remove("dragging"); store("klas-split", leftFr); }
-  s.addEventListener("pointerup", up); s.addEventListener("pointercancel", up);
-})();
+  root.appendChild(g);
+}
 
-/* =================================================================== TEKENVLAKKEN */
-var objs = {};     // key -> [object]  (lijn: {id,c,p}  tekst: {id,ty:"tx",c,x,y,txt,w})
-var images = {};   // key -> dataURL (alleen slides)
-function Surface(surfId, bodyId){
-  var el = $(surfId), body = $(bodyId), bc = el.querySelector(".bc"), dc = el.querySelector(".dc");
-  var S = {el:el, bc:bc, dc:dc, b:bc.getContext("2d"), d:dc.getContext("2d"), aspect:+el.getAttribute("data-aspect"), key:null, img:null};
-  S.fit = function(){
-    if(body.offsetParent === null) return;
-    var r = body.getBoundingClientRect(), pad = 20, W = r.width - pad, H = r.height - pad;
-    var w = Math.min(W, H * S.aspect), h = w / S.aspect;
-    el.style.width = Math.max(50, w) + "px"; el.style.height = Math.max(30, h) + "px";
-    var dpr = window.devicePixelRatio || 1;
-    [bc, dc].forEach(function(c){ c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); });
-    S.redraw();
+/* ---------- flashcards ---------- */
+function buildFlash(root){
+  let les=0,deck,i=0,dir="nl",known=0;
+  root.innerHTML=`<h2>Woorden</h2><p class="intro">Klik op de kaart om hem om te draaien. Weet je het? Klik op <b>Ik weet het</b>.</p>
+  <div class="row" style="margin-bottom:10px"><div class="seg" id="fles"><button data-l="0" class="on">Alle</button><button data-l="1">Les 1</button><button data-l="2">Les 2</button><button data-l="3">Les 3</button></div><button class="btn alt" id="fdir">NL → EN</button><span class="score" id="fscore"></span></div>
+  <div class="flash" id="fcard"><div class="in"><div class="face front"><div class="w" id="ff"></div><div class="s" id="ffs"></div></div><div class="face back"><div class="w" id="fb"></div><div class="s">klik om terug te draaien</div></div></div></div>
+  <div class="row"><button class="btn coral" id="fno">Nog niet</button><button class="btn" id="fyes">Ik weet het</button><span class="meta" id="fpos"></span></div>`;
+  const card=root.querySelector("#fcard");
+  const reset=()=>{deck=shuffle(WORDS.filter(w=>!les||w[2]===les));i=0;known=0;render()};
+  const render=()=>{
+    if(i>=deck.length){card.classList.remove("flip");root.querySelector("#ff").textContent="Klaar!";root.querySelector("#ffs").textContent=`Je wist ${known} woorden meteen. Kies opnieuw een les om verder te gaan.`;root.querySelector("#fb").textContent="";root.querySelector("#fpos").textContent="";return}
+    const [nl,en]=deck[i];card.classList.remove("flip");
+    root.querySelector("#ff").textContent=dir==="nl"?nl:en;root.querySelector("#ffs").textContent=dir==="nl"?"Wat betekent dit?":"Hoe zeg je dit in het Nederlands? (met de/het)";
+    setTimeout(()=>{root.querySelector("#fb").textContent=dir==="nl"?en:nl},200);
+    root.querySelector("#fpos").textContent=`nog ${deck.length-i} kaarten`;root.querySelector("#fscore").textContent=`${known} geweten`;
   };
-  S.redrawBg = function(){
-    S.b.fillStyle = "#fff"; S.b.fillRect(0, 0, bc.width, bc.height);
-    if(S.img){ var s = Math.min(bc.width / S.img.width, bc.height / S.img.height), w = S.img.width * s, h = S.img.height * s;
-      S.b.drawImage(S.img, (bc.width - w) / 2, (bc.height - h) / 2, w, h); }
+  card.onclick=()=>card.classList.toggle("flip");
+  root.querySelector("#fyes").onclick=()=>{if(i<deck.length){known++;i++;saveBest("woorden",known,WORDS.filter(w=>!les||w[2]===les).length);render()}};
+  root.querySelector("#fno").onclick=()=>{if(i<deck.length){deck.push(deck[i]);i++;render()}};
+  root.querySelectorAll("#fles button").forEach(b=>b.onclick=()=>{les=+b.dataset.l;root.querySelectorAll("#fles button").forEach(x=>x.classList.toggle("on",x===b));reset()});
+  root.querySelector("#fdir").onclick=e=>{dir=dir==="nl"?"en":"nl";e.target.textContent=dir==="nl"?"NL → EN":"EN → NL";render()};
+  reset();
+}
+
+/* ---------- 't kofschip ---------- */
+function buildKof(root){
+  const regs=VERBS.filter(v=>v[6]==="R");
+  let deck=shuffle(regs),i=0,good=0,done=0,streak=0,answered=false;
+  root.innerHTML=`<h2>'t kofschip</h2><p class="intro">Regelmatige werkwoorden: krijgt de verleden tijd <b>-te</b> of <b>-de</b>?</p>
+  <div class="rule">Zoek de stam (werkwoord min -en). Is de laatste letter een van deze? Dan <b>-te</b> en <b>-t</b>. Anders <b>-de</b> en <b>-d</b>.<div class="kof">${["t","k","f","s","ch","p"].map(x=>`<span>${x}</span>`).join("")}</div>Let op: <b>v en z</b> tellen niet: leven → leefde, verhuizen → verhuisde.</div>
+  <div class="box" style="text-align:center"><div class="row" style="justify-content:space-between"><span class="score" id="ks"></span><span class="meta" id="kstreak"></span></div>
+  <div class="huge" id="kv"></div><div class="meta" id="ken"></div>
+  <div class="row" style="justify-content:center;margin:16px 0 6px"><button class="btn" style="min-width:110px;font-size:18px" data-a="te">-te</button><button class="btn coral" style="min-width:110px;font-size:18px" data-a="de">-de</button></div>
+  <div class="fb" id="kfb" style="font-size:16px"></div><button class="btn alt" id="knext" style="margin-top:10px">Volgende</button></div>`;
+  const ending=v=>v[1].endsWith("te")?"te":"de";
+  const render=()=>{if(i>=deck.length){deck=shuffle(regs);i=0}answered=false;const v=deck[i];root.querySelector("#kv").textContent=v[0];root.querySelector("#ken").textContent=v[5];root.querySelector("#kfb").textContent="";root.querySelector("#kfb").className="fb";root.querySelector("#ks").textContent=`${good} van ${done} goed`;root.querySelector("#kstreak").textContent=streak>1?`${streak} op rij!`:""};
+  root.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(answered)return;answered=true;done++;const v=deck[i];const ok=b.dataset.a===ending(v);if(ok){good++;streak++}else streak=0;
+    const fb=root.querySelector("#kfb");fb.innerHTML=`${ok?"Goed!":"Niet goed."} ik <b>${v[1]}</b> · wij <b>${v[2]}</b> · ${v[4]==="h"?"heb":"ben"} <b>${v[3]}</b>`;fb.className="fb "+(ok?"ok":"bad");
+    root.querySelector("#ks").textContent=`${good} van ${done} goed`;root.querySelector("#kstreak").textContent=streak>1?`${streak} op rij!`:"";if(done>=10)saveBest("kofschip",good,done)});
+  root.querySelector("#knext").onclick=()=>{i++;render()};
+  render();
+}
+
+/* ---------- werkwoorden ---------- */
+function buildVerbs(root){
+  let filter="all",deck,i=0,good=0,done=0,checked=false;
+  root.innerHTML=`<h2>Werkwoorden</h2><p class="intro">Typ de verleden tijd (ik en wij), het voltooid deelwoord, en kies hebben of zijn. ${VERBS.length} werkwoorden.</p>
+  <div class="row" style="margin-bottom:12px"><div class="seg" id="vf"><button data-f="all" class="on">Alle</button><button data-f="R">Regelmatig</button><button data-f="S">Sterk</button></div><button class="btn alt" id="vtab">Toon de tabel</button></div>
+  <div id="vtable" style="display:none" class="box"></div>
+  <div class="box"><div class="row" style="justify-content:space-between"><div><div class="big" id="vinf"></div><div class="meta" id="ven"></div></div><span class="score" id="vscore"></span></div>
+  <div class="vgrid"><div><label>verleden tijd: ik</label><input id="v1" autocomplete="off" autocapitalize="off"></div><div><label>verleden tijd: wij</label><input id="v2" autocomplete="off" autocapitalize="off"></div><div><label>voltooid deelwoord</label><input id="v3" autocomplete="off" autocapitalize="off"></div></div>
+  <div class="vgrid"><div><label>hebben of zijn?</label><select id="v4"><option value="">kies…</option><option value="h">hebben</option><option value="z">zijn</option></select></div></div>
+  <div class="fb" id="vfb"></div>
+  <div class="row" style="margin-top:10px"><button class="btn" id="vcheck">Controleer</button><button class="btn alt" id="vnext">Volgende</button></div></div>`;
+  const ids=["v1","v2","v3","v4"].map(x=>root.querySelector("#"+x));
+  const pool=()=>VERBS.filter(v=>filter==="all"||v[6]===filter);
+  const reset=()=>{deck=shuffle(pool());i=0;render()};
+  const render=()=>{
+    if(i>=deck.length){deck=shuffle(pool());i=0}
+    const v=deck[i];checked=false;root.querySelector("#vinf").textContent=v[0];root.querySelector("#ven").textContent=v[5]+(v[6]==="S"?" · sterk":" · regelmatig");
+    ids.forEach(x=>{x.value="";x.classList.remove("ok","bad")});root.querySelector("#vfb").textContent="";root.querySelector("#vfb").className="fb";
+    root.querySelector("#vscore").textContent=`${good} van ${done} goed`;ids[0].focus({preventScroll:true});
   };
-  S.redrawObjs = function(){
-    S.d.clearRect(0, 0, dc.width, dc.height);
-    (objs[S.key] || []).forEach(function(o){ drawObj(S, o); });
+  root.querySelector("#vcheck").onclick=()=>{
+    const v=deck[i];const ans=[v[1],v[2],v[3],v[4]];let all=true;
+    ids.forEach((x,k)=>{const ok=norm(x.value)===ans[k];x.classList.toggle("ok",ok);x.classList.toggle("bad",!ok);if(!ok)all=false});
+    const fb=root.querySelector("#vfb");
+    if(all){fb.textContent="Helemaal goed!";fb.className="fb ok"}else{fb.innerHTML=`Goed is: ik <b>${v[1]}</b> · wij <b>${v[2]}</b> · <b>${v[4]==="h"?"heb":"ben"} ${v[3]}</b>`;fb.className="fb bad"}
+    if(!checked){done++;if(all)good++;checked=true;if(done>=5)saveBest("werkwoorden",good,done)}
+    root.querySelector("#vscore").textContent=`${good} van ${done} goed`;
   };
-  S.redraw = function(){ S.redrawBg(); S.redrawObjs(); };
-  if(window.ResizeObserver) new ResizeObserver(function(){ S.fit(); }).observe(body);
-  return S;
-}
-function drawObj(S, o){
-  var W = S.dc.width, H = S.dc.height, d = S.d;
-  if(o.ty === "tx"){
-    d.save(); d.fillStyle = o.c; d.font = "600 " + Math.round(W * 0.034) + "px Karla, system-ui, sans-serif"; d.textBaseline = "top";
-    String(o.txt).split("\n").forEach(function(line, i){ d.fillText(line, o.x / 1e4 * W, o.y / 1e4 * H + i * W * 0.042); });
-    d.restore(); return;
-  }
-  var p = o.p; if(!p || p.length < 2) return;
-  d.save(); d.lineCap = "round"; d.lineJoin = "round";
-  if(o.c === "hl"){ d.strokeStyle = "rgba(255,225,77,.45)"; d.lineWidth = W * 0.02; } else { d.strokeStyle = o.c; d.lineWidth = W * 0.0038; }
-  d.beginPath(); d.moveTo(p[0] / 1e4 * W, p[1] / 1e4 * H);
-  if(p.length === 2) d.lineTo(p[0] / 1e4 * W + 0.1, p[1] / 1e4 * H);
-  for(var i = 2; i < p.length; i += 2) d.lineTo(p[i] / 1e4 * W, p[i + 1] / 1e4 * H);
-  d.stroke(); d.restore();
+  root.querySelector("#vnext").onclick=()=>{i++;render()};
+  ids.forEach(x=>x.addEventListener("keydown",e=>{if(e.key==="Enter")root.querySelector("#vcheck").click()}));
+  root.querySelectorAll("#vf button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;root.querySelectorAll("#vf button").forEach(x=>x.classList.toggle("on",x===b));reset()});
+  const tb=root.querySelector("#vtable");
+  root.querySelector("#vtab").onclick=e=>{const open=tb.style.display==="none";tb.style.display=open?"block":"none";e.target.textContent=open?"Verberg de tabel":"Toon de tabel";
+    if(open)tb.innerHTML=`<table class="ref"><tr><th>Werkwoord</th><th>Verleden tijd</th><th>Voltooid deelwoord</th></tr>${VERBS.filter(v=>v[6]==="S").map(v=>`<tr><td><b>${v[0]}</b></td><td>${v[1]} / ${v[2]}</td><td>${v[4]==="h"?"heeft":"is"} ${v[3]}</td></tr>`).join("")}</table>`};
+  reset();
 }
 
-/* ---------- whiteboard ---------- */
-var WB = Surface("wbSurf", "wbBody");
-WB.list = ["wb:1"];
-WB.show = function(k, remote){
-  if(WB.list.indexOf(k) < 0) WB.list.push(k);
-  WB.key = k; if(!objs[k]) objs[k] = [];
-  WB.redraw(); wbInfo();
-  if(!remote && isT) send({t:"wb", k:k, list:WB.list});
-};
-function wbInfo(){
-  var i = WB.list.indexOf(WB.key);
-  $("wbInfo").textContent = (i + 1) + " / " + WB.list.length;
-  $("wbPrev").disabled = !isT || i <= 0; $("wbNext").disabled = !isT || i >= WB.list.length - 1;
-  $("wbMsg").hidden = (objs[WB.key] || []).length > 0 || i > 0;
+/* ---------- choice lists ---------- */
+function choiceList(root,id,data,opts){
+  const sc=scoreLine(root,id,data.length);const box=el("div",{class:"box"});root.appendChild(box);
+  data.forEach(([p,a])=>{
+    const q=el("div",{class:"q"});q.appendChild(el("div",{class:"p"},p.replace("___","<b>___</b>")));
+    const o=el("div");let answered=false,first=true;
+    opts.forEach(x=>{const b=el("button",{class:"choice"},x);b.onclick=()=>{if(answered)return;const ok=x.toLowerCase()===a.toLowerCase();b.classList.add(ok?"ok":"bad");if(ok){answered=true;if(first)sc.hit()}first=false};o.appendChild(b)});
+    q.appendChild(o);box.appendChild(q);
+  });
 }
-$("wbPrev").addEventListener("click", function(){ var i = WB.list.indexOf(WB.key); if(i > 0) WB.show(WB.list[i - 1]); });
-$("wbNext").addEventListener("click", function(){ var i = WB.list.indexOf(WB.key); if(i < WB.list.length - 1) WB.show(WB.list[i + 1]); });
-$("wbAdd").addEventListener("click", function(){ var k = "wb:" + uid(); var i = WB.list.indexOf(WB.key); WB.list.splice(i + 1, 0, k); WB.show(k); });
+function buildHZ(root){root.innerHTML=`<h2>Hebben of zijn?</h2><p class="intro">Klik op de goede vorm.</p><div class="rule"><b>Bijna altijd hebben.</b> Zijn bij een verandering van plaats of situatie: zijn (geweest), gaan, komen, blijven, worden, beginnen, vertrekken, verhuizen.</div>`;choiceList(root,"hebben-zijn",HZ,HZOPTS)}
+function buildVW(root){root.innerHTML=`<h2>Voegwoorden</h2><p class="intro">Kies het goede voegwoord. Kijk goed waar het werkwoord staat!</p>
+  <div class="rule"><span class="tag">nevenschikkend</span> en, maar, of, want, dus: <b>niets verandert</b>. <i>Ik kom niet, want ik ben ziek.</i><br><span class="tag c">onderschikkend</span> omdat, als, dat, wanneer, toen: <b>werkwoord naar het eind</b>. <i>Ik kom niet, omdat ik ziek ben.</i></div>`;choiceList(root,"voegwoorden",VW,VWOPTS)}
 
-/* ---------- slides ---------- */
-var SL = Surface("slSurf", "slBody");
-var slides = [], pdfDoc = null;
-SL.show = function(k, remote){
-  SL.key = k; if(!objs[k]) objs[k] = [];
-  var src = images[k];
-  $("slMsg").hidden = !!src || (!isT && !!k);
-  if(src){ var img = new Image(); img.onload = function(){ if(SL.key === k){ SL.img = img; SL.redraw(); } }; img.src = src; }
-  else { SL.img = null; SL.redraw(); }
-  if(!remote && isT) send({t:"show", k:k});
-  slInfo();
-};
-function slInfo(){
-  if(!SL.key){ $("slInfo").textContent = "-"; return; }
-  var n = SL.key.split(":")[2];
-  $("slInfo").textContent = n + (pdfDoc ? " / " + pdfDoc.numPages : "");
-  var i = slides.indexOf(SL.key);
-  $("slPrev").disabled = i <= 0; $("slNext").disabled = i < 0 || i >= slides.length - 1;
+/* ---------- typing ---------- */
+function buildType(root,id,data,title,intro,rule){
+  root.innerHTML=`<h2>${title}</h2><p class="intro">${intro}</p><div class="rule">${rule}</div>`;
+  const sc=scoreLine(root,id,data.length);const box=el("div",{class:"box"});root.appendChild(box);
+  data.forEach(([p,a])=>{
+    const q=el("div",{class:"q"});q.appendChild(el("div",{class:"p"},p.replace("___","<b>___</b>")));
+    const row=el("div",{class:"row"});const inp=el("input",{type:"text",autocomplete:"off",autocapitalize:"off"});const b=el("button",{class:"btn alt"},"Check");const fb=el("div",{class:"fb"});
+    let scored=false,tries=0;
+    const check=()=>{const ok=norm(inp.value)===norm(a);inp.classList.toggle("ok",ok);inp.classList.toggle("bad",!ok);tries++;
+      if(ok){fb.textContent="Goed!";fb.className="fb ok";if(!scored&&tries===1)sc.hit();scored=true}
+      else{fb.innerHTML=tries>=2?`Goed is: <b>${a}</b>`:"Nog niet goed. Probeer het nog een keer.";fb.className="fb bad"}};
+    b.onclick=check;inp.addEventListener("keydown",e=>{if(e.key==="Enter")check()});
+    row.appendChild(inp);row.appendChild(b);q.appendChild(row);q.appendChild(fb);box.appendChild(q);
+  });
 }
-if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-$("pdfIn").addEventListener("change", function(e){
-  var f = e.target.files && e.target.files[0]; if(!f) return;
-  if(!window.pdfjsLib){ toast("De pdf-lezer kon niet laden"); return; }
-  var rd = new FileReader();
-  rd.onload = function(){
-    pdfjsLib.getDocument({data:new Uint8Array(rd.result)}).promise.then(function(doc){
-      pdfDoc = doc; var id = uid(); slides = [];
-      for(var n = 1; n <= doc.numPages; n++) slides.push("p:" + id + ":" + n);
-      if(!panels.pSl){ panels.pSl = true; layout(); }
-      toast(doc.numPages + " slides geladen"); goSlide(slides[0]);
-    }).catch(function(){ toast("Deze pdf kan ik niet openen"); });
+
+/* ---------- zou ---------- */
+function buildZou(root){
+  root.innerHTML=`<h2>Zou + infinitief</h2><p class="intro">Met zou vraag je iets extra beleefd. Perfect voor een formele mail. <i>zou = would</i></p>
+  <div class="rule"><b>ik / jij / u / hij / zij zou · wij / jullie / zij zouden</b><br>Zou op plek 2 (of 1 in een vraag), de infinitief aan het eind. Twee infinitieven? Eerst kunnen/willen/mogen: <i>Ik zou graag een afspraak <b>willen maken</b>. Zou u mij <b>kunnen helpen</b>?</i><br>Portugees: <i>Eu gostaria de…</i> = Ik zou graag … willen · <i>O senhor poderia…?</i> = Zou u … kunnen?</div>
+  <h3>Deel 1 · Welke zin is goed?</h3>`;
+  const sc=scoreLine(root,"zou",ZOUMC.length);const box=el("div",{class:"box"});root.appendChild(box);
+  ZOUMC.forEach(it=>{
+    const q=el("div",{class:"q"});q.appendChild(el("div",{class:"p"},`<b>${it.p}</b>`));
+    const o=el("div");let answered=false,first=true;
+    shuffle(it.o.map((t,k)=>[t,k])).forEach(([t,k])=>{const b=el("button",{class:"choice"},t);b.onclick=()=>{if(answered)return;const ok=k===it.a;b.classList.add(ok?"ok":"bad");if(ok){answered=true;if(first)sc.hit()}first=false};o.appendChild(b)});
+    q.appendChild(o);box.appendChild(q);
+  });
+  root.appendChild(el("h3",{},"Deel 2 · Bouw de zin"));
+  const sub=el("div");root.appendChild(sub);
+  buildTiles(sub,"zou-zinnen",TILES_ZOU,null,null,null);
+}
+
+/* ---------- tiles ---------- */
+function buildTiles(root,id,data,title,intro,rule){
+  let order=shuffle(data.map((_,k)=>k)),i=0,good=0,checked=false;
+  root.innerHTML=(title?`<h2>${title}</h2><p class="intro">${intro}</p>${rule?`<div class="rule">${rule}</div>`:""}`:"")+`
+  <div class="box"><div class="row" style="justify-content:space-between"><span class="tag" data-r="tag"></span><span class="score" data-r="score"></span></div>
+  <div class="slot" data-r="slot"></div><div class="pool" data-r="pool"></div><div class="fb" data-r="fb"></div>
+  <div class="row" style="margin-top:10px"><button class="btn" data-r="check">Controleer</button><button class="btn alt" data-r="next">Volgende zin</button></div></div>`;
+  const $=k=>root.querySelector(`[data-r="${k}"]`);
+  const slot=$("slot"),pool=$("pool"),fb=$("fb");
+  const render=()=>{
+    if(i>=order.length){order=shuffle(order);i=0}
+    const it=data[order[i]];checked=false;slot.innerHTML="";pool.innerHTML="";fb.textContent="";fb.className="fb";
+    $("tag").textContent=it.t;$("score").textContent=`${good} van ${data.length} goed`;
+    let words=shuffle(it.w);let tries=0;while(words.join(" ")===it.w.join(" ")&&tries++<10)words=shuffle(it.w);
+    words.forEach(w=>{const b=el("button",{class:"tile"},w);b.onclick=()=>{(b.parentNode===pool?slot:pool).appendChild(b)};pool.appendChild(b)});
   };
-  rd.readAsArrayBuffer(f); e.target.value = "";
-});
-function renderSlide(k){
-  if(images[k]) return Promise.resolve();
-  var n = +k.split(":")[2]; $("loading").hidden = false;
-  return pdfDoc.getPage(n).then(function(page){
-    var v = page.getViewport({scale:1}), vp = page.getViewport({scale:1400 / v.width});
-    var c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
-    var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
-    return page.render({canvasContext:ctx, viewport:vp}).promise.then(function(){
-      images[k] = c.toDataURL("image/jpeg", 0.82);
-      var s = document.createElement("canvas"), sw = 1100, sh = Math.round(c.height * sw / c.width);
-      s.width = sw; s.height = sh; s.getContext("2d").drawImage(c, 0, 0, sw, sh);
-      images["send:" + k] = s.toDataURL("image/jpeg", 0.7);
-      $("loading").hidden = true;
-    });
-  });
+  $("check").onclick=()=>{
+    const it=data[order[i]];
+    if(pool.children.length){fb.textContent="Gebruik alle stukjes.";fb.className="fb bad";return}
+    const built=[...slot.children].map(b=>b.textContent).join(" ");
+    const ok=[it.s,...(it.alt||[])].some(s=>norm(s)===norm(built));
+    if(ok){fb.textContent="Goed! "+it.s;fb.className="fb ok";if(!checked){good++;saveBest(id.startsWith("zou")?"zou":id,good,data.length)}}
+    else{fb.innerHTML="Nog niet goed. Goed is: <b>"+it.s+"</b>";fb.className="fb bad"}
+    checked=true;$("score").textContent=`${good} van ${data.length} goed`;
+  };
+  $("next").onclick=()=>{i++;render()};
+  render();
 }
-function goSlide(k){
-  renderSlide(k).then(function(){
-    sendSlide(k); SL.show(k);
-    var i = slides.indexOf(k); if(slides[i + 1]) renderSlide(slides[i + 1]);
-  });
-}
-var sent = {};
-function sendSlide(k, force){
-  var data = images["send:" + k];
-  if(!online() || !data || (sent[k] && !force)) return;
-  var size = 3000, n = Math.ceil(data.length / size);
-  send({t:"slide", k:k, n:n});
-  for(var i = 0; i < n; i++) send({t:"chunk", k:k, i:i, d:data.substr(i * size, size)});
-  sent[k] = true;
-}
-$("slPrev").addEventListener("click", function(){ var i = slides.indexOf(SL.key); if(i > 0) goSlide(slides[i - 1]); });
-$("slNext").addEventListener("click", function(){ var i = slides.indexOf(SL.key); if(i >= 0 && i < slides.length - 1) goSlide(slides[i + 1]); });
-var inc = {};
-function incomingSlide(m){ inc[m.k] = {n:m.n, parts:[], got:0}; $("loading").hidden = false; }
-function incomingChunk(m){
-  var b = inc[m.k]; if(!b) return;
-  if(b.parts[m.i] === undefined){ b.parts[m.i] = m.d; b.got++; }
-  if(b.got === b.n){
-    images[m.k] = b.parts.join(""); delete inc[m.k];
-    $("loading").hidden = Object.keys(inc).length === 0;
-    if(SL.key === m.k) SL.show(m.k, true);
-  }
-}
-function sendState(){
-  if(!online()) return;
-  send({t:"perm", draw:canDraw});
-  send({t:"mode", m:mode});
-  cvSendAll();
-  send({t:"wb", k:WB.key, list:WB.list});
-  WB.list.forEach(function(k){ (objs[k] || []).forEach(function(o){ sendObjWhole(k, o); }); });
-  if(SL.key){
-    sent = {}; sendSlide(SL.key, true); send({t:"show", k:SL.key});
-    (objs[SL.key] || []).forEach(function(o){ sendObjWhole(SL.key, o); });
-  }
-}
-
-/* =================================================================== GEREEDSCHAP */
-var tool = "pen", color = "#0f2a2e", canDraw = true, mine = [], drawing = null, sentIdx = 0, lastSent = 0;
-function setTool(btn){
-  tool = btn.getAttribute("data-tool"); if(btn.getAttribute("data-color")) color = btn.getAttribute("data-color");
-  document.querySelectorAll("[data-tool]").forEach(function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
-  [WB, SL].forEach(function(S){ S.el.classList.toggle("t-text", tool === "text"); });
-}
-document.querySelectorAll("[data-tool]").forEach(function(b){ b.addEventListener("click", function(){ setTool(b); }); });
-function setPerm(v, remote){
-  canDraw = !!v; document.body.classList.toggle("nodraw", !isT && !canDraw);
-  if(!isT) $("tools").style.opacity = canDraw ? "1" : ".4";
-  if(window.cvPerm) window.cvPerm();
-  if(!remote && isT) send({t:"perm", draw:canDraw});
-}
-$("allowDraw").addEventListener("change", function(){ setPerm(this.checked); });
-function allowed(){ return isT || canDraw; }
-
-function bindDraw(S){
-  var dc = S.dc;
-  function pt(e){ var r = dc.getBoundingClientRect();
-    return [Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * 1e4), Math.round(Math.max(0, Math.min(1, (e.clientY - r.top) / r.height)) * 1e4)]; }
-  dc.addEventListener("pointerdown", function(e){
-    if(!allowed() || !S.key) return;
-    if(tool === "text"){ e.preventDefault(); startText(S, pt(e)); return; }
-    dc.setPointerCapture(e.pointerId);
-    var p = pt(e);
-    if(tool === "eraser"){ drawing = {erase:true, S:S}; eraseAt(S, p); return; }
-    drawing = {id:uid(), c: tool === "hl" ? "hl" : color, p:p.slice(), k:S.key, S:S};
-    objs[S.key].push(drawing); mine.push({k:S.key, id:drawing.id});
-    sentIdx = 0; lastSent = 0; drawObj(S, drawing); if(S === WB) wbInfo();
-  });
-  dc.addEventListener("pointermove", function(e){
-    if(!drawing || drawing.S !== S) return;
-    var p = pt(e);
-    if(drawing.erase){ eraseAt(S, p); return; }
-    var L = drawing.p.length;
-    if(Math.abs(p[0] - drawing.p[L - 2]) + Math.abs(p[1] - drawing.p[L - 1]) < 8) return;
-    drawing.p.push(p[0], p[1]); S.redrawObjs();
-    if(Date.now() - lastSent > 60) flush();
-  });
-  function end(){ if(!drawing || drawing.S !== S) return; if(!drawing.erase) flush(); drawing = null; }
-  dc.addEventListener("pointerup", end); dc.addEventListener("pointercancel", end);
-}
-function clean(o){ var c = {}; for(var k in o) if(k !== "S" && k !== "k") c[k] = o[k]; return c; }
-function flush(){
-  var s = drawing; if(!s || s.erase) return;
-  var from = Math.max(0, sentIdx - 2), part = s.p.slice(from);
-  while(part.length > 600){ send({t:"obj", k:s.k, id:s.id, c:s.c, p:part.slice(0, 600), a:from > 0}); from += 598; part = s.p.slice(from); }
-  send({t:"obj", k:s.k, id:s.id, c:s.c, p:part, a:from > 0});
-  sentIdx = s.p.length; lastSent = Date.now();
-}
-function sendObjWhole(k, o){
-  if(o.ty === "tx"){ send({t:"obj", k:k, id:o.id, ty:"tx", c:o.c, x:o.x, y:o.y, txt:String(o.txt).slice(0, 1500), w:o.w}); return; }
-  for(var from = 0; from < o.p.length; from += 598)
-    send({t:"obj", k:k, id:o.id, c:o.c, p:o.p.slice(from ? from - 2 : 0, from + 600), a:from > 0});
-}
-function remoteObj(m){
-  if(!objs[m.k]) objs[m.k] = [];
-  var list = objs[m.k], o = null;
-  for(var i = 0; i < list.length; i++) if(list[i].id === m.id){ o = list[i]; break; }
-  if(m.ty === "tx"){ if(!o) list.push({id:m.id, ty:"tx", c:m.c, x:m.x, y:m.y, txt:m.txt, w:m.w}); }
-  else {
-    if(!o){ o = {id:m.id, c:m.c, p:[]}; list.push(o); }
-    else if(!m.a) return;
-    var pts = m.a ? m.p.slice(2) : m.p; for(var j = 0; j < pts.length; j++) o.p.push(pts[j]);
-  }
-  if(m.k === WB.key){ WB.redrawObjs(); wbInfo(); }
-  if(m.k === SL.key) SL.redrawObjs();
-}
-function eraseAt(S, p){
-  var list = objs[S.key] || [], R = 140;
-  for(var i = list.length - 1; i >= 0; i--){
-    var o = list[i], hit = false;
-    if(o.ty === "tx"){ hit = p[0] >= o.x - R && p[0] <= o.x + (o.w || 1500) + R && p[1] >= o.y - R && p[1] <= o.y + 520 * (String(o.txt).split("\n").length) + R; }
-    else for(var j = 0; j < o.p.length; j += 2) if(Math.abs(o.p[j] - p[0]) < R && Math.abs(o.p[j + 1] - p[1]) < R){ hit = true; break; }
-    if(hit) removeObj(S.key, o.id);
-  }
-}
-function removeObj(k, id, remote){
-  var list = objs[k] || [];
-  for(var i = 0; i < list.length; i++) if(list[i].id === id){ list.splice(i, 1); break; }
-  if(k === WB.key){ WB.redrawObjs(); wbInfo(); }
-  if(k === SL.key) SL.redrawObjs();
-  if(!remote) send({t:"erase", k:k, id:id});
-}
-function clearKey(k, remote){
-  objs[k] = []; if(k === WB.key){ WB.redrawObjs(); wbInfo(); } if(k === SL.key) SL.redrawObjs();
-  if(!remote) send({t:"clear", k:k});
-}
-function undo(){
-  for(var i = mine.length - 1; i >= 0; i--){
-    var m = mine[i]; mine.splice(i, 1);
-    if((objs[m.k] || []).some(function(o){ return o.id === m.id; })){ removeObj(m.k, m.id); return; }
-  }
-}
-$("undo").addEventListener("click", undo);
-
-/* typen op het bord */
-function startText(S, p){
-  var old = S.el.querySelector(".txtin"); if(old) old.blur();
-  var r = S.dc.getBoundingClientRect(), fs = Math.round(r.width * 0.034);
-  var inp = document.createElement("textarea"); inp.className = "txtin"; inp.rows = 1;
-  inp.style.left = (p[0] / 1e4 * r.width) + "px"; inp.style.top = (p[1] / 1e4 * r.height) + "px";
-  inp.style.fontSize = fs + "px"; inp.style.lineHeight = (r.width * 0.042) + "px"; inp.style.color = color;
-  inp.style.maxWidth = (r.width - p[0] / 1e4 * r.width - 6) + "px";
-  S.el.appendChild(inp); inp.focus();
-  var done = false;
-  function commit(){
-    if(done) return; done = true;
-    var txt = inp.value.replace(/\s+$/, ""); inp.remove(); if(!txt || !S.key) return;
-    S.d.font = "600 " + Math.round(S.dc.width * 0.034) + "px Karla, system-ui, sans-serif";
-    var wpx = Math.max.apply(null, txt.split("\n").map(function(l){ return S.d.measureText(l).width; }));
-    var o = {id:uid(), ty:"tx", c:color, x:p[0], y:p[1], txt:txt, w:Math.round(wpx / S.dc.width * 1e4)};
-    objs[S.key].push(o); mine.push({k:S.key, id:o.id}); S.redrawObjs(); if(S === WB) wbInfo();
-    sendObjWhole(S.key, o);
-  }
-  inp.addEventListener("input", function(){ inp.style.height = "auto"; inp.style.height = inp.scrollHeight + "px"; });
-  inp.addEventListener("keydown", function(e){
-    if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); commit(); }
-    if(e.key === "Escape"){ done = true; inp.remove(); }
-  });
-  inp.addEventListener("blur", commit);
-}
-bindDraw(WB); bindDraw(SL);
-
-document.addEventListener("keydown", function(e){
-  if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable || e.altKey) return;
-  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z"){ e.preventDefault(); undo(); return; }
-  if(e.ctrlKey || e.metaKey) return;
-  if(e.key === "t" || e.key === "T"){ setTool(document.querySelector('[data-tool="text"]')); return; }
-  if(e.key === "e" || e.key === "E"){ setTool(document.querySelector('[data-tool="eraser"]')); return; }
-  if(e.key === "p" || e.key === "P"){ setTool(document.querySelector('[data-tool="pen"]')); return; }
-  if(!isT) return;
-  if(e.key === "ArrowRight" || e.key === "PageDown"){ e.preventDefault(); $("slNext").click(); }
-  if(e.key === "ArrowLeft" || e.key === "PageUp"){ e.preventDefault(); $("slPrev").click(); }
-});
-
-
-/* =================================================================== CANVAS (samen typen) */
-var mode = "wb";
-function setMode(m, remote){
-  mode = m === "cv" ? "cv" : "wb";
-  document.querySelectorAll("[data-mode]").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-mode") === mode ? "true" : "false"); });
-  $("wbBody").hidden = mode !== "wb"; $("wbNav").hidden = mode !== "wb";
-  $("cvBody").hidden = mode !== "cv"; $("cvBar").hidden = mode !== "cv";
-  if(!panels.pWb && !remote){ panels.pWb = true; layout(); }
-  if(!remote && mqPhone.matches && mview === "sl"){ mview = "wb"; layout(); }
-  if(mode === "wb") requestAnimationFrame(function(){ WB.fit(); });
-  if(!remote && isT) send({t:"mode", m:mode});
-}
-document.querySelectorAll("[data-mode]").forEach(function(b){ b.addEventListener("click", function(){ setMode(b.getAttribute("data-mode")); }); });
-
-/* grote berichten in stukjes */
-function sendBig(obj){
-  var s = JSON.stringify(obj);
-  if(s.length < 3500){ send(obj); return; }
-  var mid = uid(), n = Math.ceil(s.length / 3000);
-  for(var i = 0; i < n; i++) send({t:"big", mid:mid, i:i, n:n, d:s.substr(i * 3000, 3000)});
-}
-var bigs = {};
-function incomingBig(m){
-  var b = bigs[m.mid] || (bigs[m.mid] = {parts:[], got:0});
-  if(b.parts[m.i] === undefined){ b.parts[m.i] = m.d; b.got++; }
-  if(b.got === m.n){ delete bigs[m.mid]; try{ onMessage(JSON.parse(b.parts.join(""))); }catch(e){} }
-}
-
-/* alleen veilige opmaak toelaten */
-var OK_TAGS = {B:1, STRONG:1, I:1, EM:1, U:1, SPAN:1, BR:1, MARK:1, FONT:1};
-function safeHTML(html){
-  var t = document.createElement("template"); t.innerHTML = String(html || "");
-  (function walk(node){
-    Array.prototype.slice.call(node.childNodes).forEach(function(c){
-      if(c.nodeType === 3) return;
-      if(c.nodeType !== 1 || !OK_TAGS[c.tagName]){
-        if(c.nodeType === 1 && !/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|SVG|MATH)$/.test(c.tagName)){ walk(c); while(c.firstChild) node.insertBefore(c.firstChild, c); }
-        c.remove(); return;
-      }
-      var col = c.getAttribute("color"), st = c.style, keep = [];
-      if(st && st.color && /^(rgb\([\d ,]+\)|#[0-9a-f]{3,6}|[a-z]+)$/i.test(st.color)) keep.push("color:" + st.color);
-      if(st && st.backgroundColor && /^(rgb\([\d ,]+\)|#[0-9a-f]{3,6}|[a-z]+)$/i.test(st.backgroundColor)) keep.push("background-color:" + st.backgroundColor);
-      if(c.tagName === "FONT" && col && /^#[0-9a-f]{3,6}$/i.test(col)) keep.push("color:" + col);
-      Array.prototype.slice.call(c.attributes).forEach(function(a){ c.removeAttribute(a.name); });
-      if(keep.length) c.setAttribute("style", keep.join(";"));
-      walk(c);
-    });
-  })(t.content);
-  var d = document.createElement("div"); d.appendChild(t.content); return d.innerHTML;
-}
-
-var CV = $("cv"), cvLast = {}, cvOrder = [], cvT = null;
-function cvBlocks(){ return Array.prototype.slice.call(CV.children); }
-function newBlock(id, t){ var d = document.createElement("div"); d.className = "b"; d.setAttribute("data-t", t || "p"); d.setAttribute("data-id", id || uid()); return d; }
-function cvNormalize(){
-  Array.prototype.slice.call(CV.childNodes).forEach(function(n){
-    if(n.nodeType === 1 && n.classList.contains("b")) return;
-    if(n.nodeType === 3 && !n.textContent.length){ n.remove(); return; }
-    var d = newBlock(); CV.insertBefore(d, n); d.appendChild(n);
-  });
-  if(!CV.children.length){ var d = newBlock(); d.innerHTML = "<br>"; CV.appendChild(d); }
-  var seen = {};
-  cvBlocks().forEach(function(b){
-    var id = b.getAttribute("data-id");
-    if(!id || seen[id]){
-      b.setAttribute("data-id", uid());
-      if(b.getAttribute("data-t") === "h" && !b.textContent.trim()) b.setAttribute("data-t", "p");
-    }
-    if(!b.getAttribute("data-t")) b.setAttribute("data-t", "p");
-    b.className = "b";
-    seen[b.getAttribute("data-id")] = 1;
-  });
-  CV.classList.toggle("is-empty", !CV.textContent.trim() && CV.children.length <= 1 && CV.firstElementChild.getAttribute("data-t") === "p");
-}
-function cvSync(){
-  cvNormalize();
-  var ids = [], changed = [];
-  cvBlocks().forEach(function(b){
-    var id = b.getAttribute("data-id"), t = b.getAttribute("data-t"), html = b.innerHTML, key = t + "|" + html;
-    ids.push(id);
-    if(cvLast[id] !== key){ cvLast[id] = key; changed.push({t:"cvb", id:id, bt:t, h:html}); }
-  });
-  var orderChanged = ids.join(",") !== cvOrder.join(",");
-  cvOrder.forEach(function(id){ if(ids.indexOf(id) < 0) delete cvLast[id]; });
-  cvOrder = ids;
-  changed.forEach(sendBig);
-  if(orderChanged) sendBig({t:"cvo", ids:ids});
-  if(window.cvSave) window.cvSave();
-}
-CV.addEventListener("input", function(){ clearTimeout(cvT); cvT = setTimeout(cvSync, 120); });
-CV.addEventListener("input", function(e){
-  if(e.inputType !== "insertParagraph") return;
-  var s = window.getSelection(); if(!s.rangeCount) return;
-  var n = s.anchorNode, b = n && (n.nodeType === 1 ? n : n.parentNode).closest(".b");
-  if(b && b.getAttribute("data-t") === "h" && !b.textContent.trim()){ b.setAttribute("data-t", "p"); b.removeAttribute("data-id"); }
-});
-CV.addEventListener("paste", function(e){
-  e.preventDefault();
-  var txt = (e.clipboardData || window.clipboardData).getData("text/plain");
-  document.execCommand("insertText", false, txt);
-});
-$("cvPage").addEventListener("mousedown", function(e){ if(e.target === this && CV.isContentEditable){ e.preventDefault(); CV.focus(); } });
-
-/* caret bewaren bij een update van de ander */
-function caretIn(block){
-  var s = window.getSelection(); if(!s.rangeCount || !block.contains(s.anchorNode)) return -1;
-  var r = document.createRange(); r.selectNodeContents(block); r.setEnd(s.anchorNode, s.anchorOffset);
-  return r.toString().length;
-}
-function setCaret(block, off){
-  var walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT), n, left = off;
-  while((n = walker.nextNode())){
-    if(left <= n.length){ var r = document.createRange(); r.setStart(n, left); r.collapse(true); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); return; }
-    left -= n.length;
-  }
-  var r2 = document.createRange(); r2.selectNodeContents(block); r2.collapse(false); var s2 = window.getSelection(); s2.removeAllRanges(); s2.addRange(r2);
-}
-function cvApplyBlock(m){
-  var b = CV.querySelector('[data-id="' + String(m.id).replace(/[^a-z0-9]/gi, "") + '"]');
-  if(!b){ b = newBlock(String(m.id).replace(/[^a-z0-9]/gi, ""), m.bt); CV.appendChild(b); }
-  var off = caretIn(b);
-  b.setAttribute("data-t", m.bt === "h" || m.bt === "li" ? m.bt : "p");
-  b.innerHTML = safeHTML(m.h) || "<br>";
-  if(off >= 0) setCaret(b, off);
-  cvLast[m.id] = b.getAttribute("data-t") + "|" + b.innerHTML;
-  CV.classList.toggle("is-empty", !CV.textContent.trim() && CV.children.length <= 1);
-  if(window.cvSave) window.cvSave();
-}
-function cvApplyOrder(ids){
-  if(!Array.isArray(ids)) return;
-  var map = {};
-  cvBlocks().forEach(function(b){ map[b.getAttribute("data-id")] = b; });
-  var current = cvBlocks().map(function(b){ return b.getAttribute("data-id"); }).join(",");
-  if(current !== ids.join(",")){
-    ids = ids.map(function(id){ return String(id).replace(/[^a-z0-9]/gi, ""); });
-    ids.forEach(function(id){ var b = map[id] || newBlock(id); if(!map[id]) b.innerHTML = "<br>"; CV.appendChild(b); delete map[id]; });
-    Object.keys(map).forEach(function(id){ map[id].remove(); delete cvLast[id]; });
-  }
-  cvOrder = ids.slice();
-  if(!CV.children.length) cvNormalize();
-  CV.classList.toggle("is-empty", !CV.textContent.trim() && CV.children.length <= 1);
-  if(window.cvSave) window.cvSave();
-}
-function cvSendAll(){
-  cvNormalize();
-  cvBlocks().forEach(function(b){ sendBig({t:"cvb", id:b.getAttribute("data-id"), bt:b.getAttribute("data-t"), h:b.innerHTML}); });
-  cvOrder = cvBlocks().map(function(b){ return b.getAttribute("data-id"); });
-  sendBig({t:"cvo", ids:cvOrder});
-  cvBlocks().forEach(function(b){ cvLast[b.getAttribute("data-id")] = b.getAttribute("data-t") + "|" + b.innerHTML; });
-}
-function cvLoad(html){
-  var tmp = document.createElement("div"); tmp.innerHTML = html || "";
-  CV.innerHTML = "";
-  Array.prototype.slice.call(tmp.children).forEach(function(c){
-    var b = newBlock(c.getAttribute("data-id") || uid(), c.getAttribute("data-t"));
-    b.innerHTML = safeHTML(c.innerHTML) || "<br>"; CV.appendChild(b);
-  });
-  cvLast = {}; cvNormalize(); cvSendAll();
-}
-window.cvPerm = function(){ CV.contentEditable = allowed() ? "true" : "false"; };
-
-/* knoppen */
-function curBlocks(){
-  var s = window.getSelection(); if(!s.rangeCount) return [];
-  var r = s.getRangeAt(0); if(!CV.contains(r.commonAncestorContainer)) return [];
-  return cvBlocks().filter(function(b){ return r.intersectsNode(b); });
-}
-document.querySelectorAll("[data-cmd]").forEach(function(btn){
-  btn.addEventListener("mousedown", function(e){ e.preventDefault(); });
-  btn.addEventListener("click", function(){
-    var c = btn.getAttribute("data-cmd");
-    if(c === "copy"){ copy(CV.innerText.trim(), "Tekst van het canvas gekopieerd"); return; }
-    if(c === "wipe"){ if(confirm("Het hele canvas leegmaken?")){ CV.innerHTML = ""; cvSync(); } return; }
-    if(!allowed()) return;
-    if(c === "h" || c === "p" || c === "li"){
-      var bs = curBlocks(); if(!bs.length) return;
-      var all = bs.every(function(b){ return b.getAttribute("data-t") === c; });
-      bs.forEach(function(b){ b.setAttribute("data-t", all && c !== "p" ? "p" : c); });
-      cvSync(); return;
-    }
-    if(!curBlocks().length) return;
-    try{ document.execCommand("styleWithCSS", false, true); }catch(e){}
-    if(c === "bold") document.execCommand("bold");
-    if(c === "italic") document.execCommand("italic");
-    if(c === "mark") document.execCommand("hiliteColor", false, "#ffe98a");
-    if(c === "red") document.execCommand("foreColor", false, "#d0523a");
-    if(c === "clear") document.execCommand("removeFormat");
-    cvSync();
-  });
-});
-cvNormalize();
-
-/* =================================================================== NOTITIES (alleen docent, in deze browser) */
-if(isT){
-  var KEY = "klas-notities-v1";
-  var db = store(KEY) || {students:[], lessons:{}, sel:null};
-  if(!db.students) db.students = []; if(!db.lessons) db.lessons = {};
-  var saveT = null;
-  function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); $("saved").textContent = "opgeslagen"; }catch(e){ $("saved").textContent = "niet opgeslagen!"; } }, 300); }
-  function today(){ var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
-  function nice(iso){ return new Date(iso + "T12:00:00").toLocaleDateString("nl-NL", {weekday:"long", day:"numeric", month:"long"}); }
-  function stu(){ return db.students.filter(function(s){ return s.id === db.sel; })[0] || null; }
-  function lessonsOf(id){ return db.lessons[id] || (db.lessons[id] = []); }
-  function todayLesson(create){
-    var s = stu(); if(!s) return null;
-    var L = lessonsOf(s.id), t = today(), l = L.filter(function(x){ return x.date === t; })[0];
-    if(!l && create){ l = {date:t, notes:"", words:[], hw:""}; L.push(l); }
-    return l || null;
-  }
-  function renderStudents(){
-    var sel = $("studentSel"); sel.innerHTML = "";
-    if(!db.students.length){ var o = document.createElement("option"); o.textContent = "Nog geen leerlingen"; o.value = ""; sel.appendChild(o); }
-    db.students.slice().sort(function(a, b){ return a.name.localeCompare(b.name); }).forEach(function(s){
-      var o = document.createElement("option"); o.value = s.id; o.textContent = s.name + " (" + s.level + ")"; sel.appendChild(o);
-    });
-    if(!stu() && db.students.length) db.sel = db.students[0].id;
-    sel.value = db.sel || ""; renderAll();
-  }
-  function renderAll(){
-    var s = stu();
-    ["nToday","nHw","wNl","wUit","pName","pLevel","pGoal","pAbout"].forEach(function(id){ $(id).disabled = !s; });
-    $("todayLbl").textContent = "Les van " + nice(today());
-    var l = todayLesson(false);
-    $("nToday").value = l ? l.notes : ""; $("nHw").value = l ? l.hw : "";
-    var past = s ? lessonsOf(s.id).filter(function(x){ return x.date !== today(); }).sort(function(a, b){ return a.date < b.date ? 1 : -1; }) : [];
-    $("prevHw").textContent = past[0] && past[0].hw ? past[0].hw : "-";
-    var ul = $("wordList"); ul.innerHTML = "";
-    (l ? l.words : []).forEach(function(w, i){
-      var li = document.createElement("li"); li.innerHTML = "<span><b></b> = <i></i></span>";
-      li.querySelector("b").textContent = w.nl; li.querySelector("i").textContent = w.uit || "...";
-      var x = document.createElement("button"); x.className = "x"; x.type = "button"; x.textContent = "×"; x.title = "Verwijderen";
-      x.addEventListener("click", function(){ l.words.splice(i, 1); save(); renderAll(); });
-      li.appendChild(x); ul.appendChild(li);
-    });
-    var total = s ? lessonsOf(s.id).reduce(function(n, x){ return n + x.words.length; }, 0) : 0;
-    $("allWordsInfo").textContent = s ? total + " woorden in totaal bij " + s.name + "." : "Voeg eerst een leerling toe.";
-    var h = $("hist"); h.innerHTML = "";
-    if(!past.length) h.innerHTML = '<p class="muted">Nog geen eerdere lessen.</p>';
-    past.forEach(function(x){
-      var d = document.createElement("details"), sm = document.createElement("summary"), pre = document.createElement("pre");
-      sm.textContent = nice(x.date);
-      pre.textContent = (x.notes || "(geen notities)") + (x.words.length ? "\n\nWoorden: " + x.words.map(function(w){ return w.nl; }).join(", ") : "") + (x.hw ? "\n\nHuiswerk: " + x.hw : "");
-      d.appendChild(sm); d.appendChild(pre); h.appendChild(d);
-    });
-    $("pName").value = s ? s.name : ""; $("pLevel").value = s ? s.level : "A1";
-    $("pGoal").value = s ? (s.goal || "") : ""; $("pAbout").value = s ? (s.about || "") : "";
-  }
-  var cvOwner = null, cvSaveT = null;
-  function cvKey(id){ return "klas-canvas-" + (id || "algemeen"); }
-  window.cvSave = function(){ clearTimeout(cvSaveT); var owner = cvOwner; cvSaveT = setTimeout(function(){ try{ localStorage.setItem(cvKey(owner), CV.innerHTML); }catch(e){} }, 400); };
-  function cvSwitch(id){
-    if(cvOwner !== null || id){ try{ localStorage.setItem(cvKey(cvOwner), CV.innerHTML); }catch(e){} }
-    clearTimeout(cvSaveT); cvOwner = id || null;
-    var html = null; try{ html = localStorage.getItem(cvKey(cvOwner)); }catch(e){}
-    cvLoad(html || "");
-  }
-  $("studentSel").addEventListener("change", function(){ db.sel = this.value; save(); renderAll(); cvSwitch(db.sel); });
-  $("nToday").addEventListener("input", function(){ var l = todayLesson(true); if(l){ l.notes = this.value; save(); } });
-  $("nHw").addEventListener("input", function(){ var l = todayLesson(true); if(l){ l.hw = this.value; save(); } });
-  $("wordForm").addEventListener("submit", function(e){
-    e.preventDefault(); var nl = $("wNl").value.trim(); if(!nl) return; var l = todayLesson(true); if(!l) return;
-    l.words.push({nl:nl, uit:$("wUit").value.trim()}); $("wNl").value = ""; $("wUit").value = ""; $("wNl").focus(); save(); renderAll();
-  });
-  ["pName","pGoal","pAbout"].forEach(function(id){ $(id).addEventListener("input", function(){ var s = stu(); if(!s) return; s[{pName:"name", pGoal:"goal", pAbout:"about"}[id]] = this.value; save(); }); });
-  $("pName").addEventListener("change", renderStudents);
-  $("pLevel").addEventListener("change", function(){ var s = stu(); if(s){ s.level = this.value; save(); renderStudents(); } });
-  $("delStudent").addEventListener("click", function(){
-    var s = stu(); if(!s || !confirm(s.name + " en alle notities verwijderen?")) return;
-    db.students = db.students.filter(function(x){ return x.id !== s.id; }); delete db.lessons[s.id]; db.sel = null; save(); renderStudents();
-  });
-  $("addStudent").addEventListener("click", function(){ $("newOv").hidden = false; $("newName").value = ""; $("newGoal").value = ""; $("newName").focus(); });
-  $("newCancel").addEventListener("click", function(){ $("newOv").hidden = true; });
-  $("newForm").addEventListener("submit", function(e){
-    e.preventDefault(); var n = $("newName").value.trim(); if(!n) return;
-    var s = {id:uid(), name:n, level:$("newLevel").value, goal:$("newGoal").value.trim(), about:""};
-    db.students.push(s); db.sel = s.id; $("newOv").hidden = true; save(); renderStudents(); cvSwitch(db.sel);
-  });
-  document.querySelectorAll(".tab").forEach(function(t){
-    t.addEventListener("click", function(){
-      document.querySelectorAll(".tab").forEach(function(x){ x.setAttribute("aria-selected", x === t ? "true" : "false"); });
-      document.querySelectorAll("[data-pane]").forEach(function(p){ p.hidden = p.getAttribute("data-pane") !== t.getAttribute("data-tab"); });
-    });
-  });
-  $("report").addEventListener("click", function(){
-    var s = stu(), l = todayLesson(false); if(!s || !l){ toast("Nog niks om te kopiëren"); return; }
-    var txt = "Hoi " + s.name.split(" ")[0] + "! Dit deden we vandaag (" + nice(l.date) + "):\n\n" + (l.notes || "-");
-    if(l.words.length) txt += "\n\nNieuwe woorden:\n" + l.words.map(function(w){ return "- " + w.nl + (w.uit ? " = " + w.uit : ""); }).join("\n");
-    if(l.hw) txt += "\n\nHuiswerk:\n" + l.hw;
-    copy(txt + "\n\nTot de volgende keer!\nScip", "Lesverslag gekopieerd, plak het in WhatsApp of mail");
-  });
-  $("exportBtn").addEventListener("click", function(){
-    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 1)], {type:"application/json"}));
-    a.download = "klas-backup-" + today() + ".json"; document.body.appendChild(a); a.click(); a.remove();
-  });
-  $("importIn").addEventListener("change", function(e){
-    var f = e.target.files && e.target.files[0]; if(!f) return; var r = new FileReader();
-    r.onload = function(){ try{ var d = JSON.parse(r.result); if(!d.students) throw 0; if(!confirm("Je huidige notities vervangen door deze back-up?")) return; db = d; save(); renderStudents(); toast("Back-up teruggezet"); }catch(err){ toast("Dit is geen geldige back-up"); } };
-    r.readAsText(f); e.target.value = "";
-  });
-  function showDrawer(v){ $("drawer").hidden = !v; $("notesBtn").setAttribute("aria-pressed", v ? "true" : "false"); }
-  $("notesBtn").addEventListener("click", function(){ showDrawer($("drawer").hidden); });
-  $("drawerClose").addEventListener("click", function(){ showDrawer(false); });
-  renderStudents();
-  cvOwner = db.sel || null;
-  try{ var first = localStorage.getItem(cvKey(cvOwner)); if(first) cvLoad(first); }catch(e){}
-}
-
-/* =================================================================== START */
-setPerm(true, true);
-setMode("wb", true);
-WB.show("wb:1", true);
-SL.show(null, true);
-layout();
-window.addEventListener("resize", function(){ WB.fit(); SL.fit(); placeVideo(store("klas-video")); });
-})();
+show();
 </script>
 </body>
 </html>
