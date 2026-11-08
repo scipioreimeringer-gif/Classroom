@@ -1,6 +1,6 @@
 // Opslag voor het klaslokaal: notities en canvassen van de docent (Upstash Redis via Vercel).
 // Instellen in Vercel: Storage -> Upstash Redis koppelen, en Environment Variable KLAS_PASSWORD.
-const KEY_RE = /^(notes|canvas:[a-z0-9]{1,24})$/;
+const KEY_RE = /^(notes|canvas:[a-z0-9]{1,24}|board:[a-z0-9]{1,24})$/;
 
 function redisConf() {
   const env = process.env;
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   const conf = redisConf();
   if (req.method === "GET" && req.query && req.query.ping !== undefined) {
-    return res.status(200).json({ ok: true, storage: !!conf, password: !!process.env.KLAS_PASSWORD, ai: !!process.env.ANTHROPIC_API_KEY });
+    return res.status(200).json({ ok: true, storage: !!conf, password: !!process.env.KLAS_PASSWORD, ai: !!(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY) });
   }
   if (!authed(req)) return res.status(401).json({ error: "wachtwoord" });
   if (!conf) return res.status(500).json({ error: "Opslag is nog niet gekoppeld in Vercel" });
