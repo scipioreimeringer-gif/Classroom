@@ -74,6 +74,9 @@
   .cvbar{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
   .cvbar .ib{font-weight:800;font-size:.86rem}
   .cvbar .ib.on{background:var(--teal-soft)}
+  .cvsep{width:1px;height:22px;background:var(--line);margin:0 4px}
+  .pgsel{border:1px solid var(--line-strong);background:var(--surface);border-radius:8px;padding:4px 6px;font-size:.82rem;font-weight:700;max-width:150px}
+  #sorted .words li small{color:var(--muted)}
   .cvbody{align-items:stretch;justify-content:center;overflow:auto;padding:14px}
   .cvpage{background:#fff;width:100%;max-width:820px;min-height:100%;border-radius:6px;box-shadow:0 10px 28px -18px rgba(15,42,46,.55);padding:26px 32px 60px;cursor:text}
   .cv{outline:none;font-family:var(--body);font-size:17px;line-height:1.6;color:#0f2a2e;min-height:260px;position:relative}
@@ -181,7 +184,7 @@
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v10</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v11</small></div>
   <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
   <span class="timer" id="timer" title="Lestijd">00:00</span>
   <button class="btn sm ghost" id="copyLink" data-teacher type="button">Link voor leerling</button>
@@ -211,6 +214,13 @@
         <button class="ib" data-cmd="red" type="button" title="Rood (verbetering)"><span style="color:#d0523a">A</span></button>
         <button class="ib" data-cmd="clear" type="button" title="Opmaak weghalen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5h11M10 5l-3 14M4 20l16-16"/></svg></button>
         <button class="ib" data-cmd="copy" type="button" title="Tekst kopiëren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg></button>
+        <span class="cvsep"></span>
+        <select class="pgsel" id="cvPageSel" data-teacher title="Pagina kiezen" aria-label="Pagina"></select>
+        <span class="pinfo" id="cvPageLbl" data-student hidden></span>
+        <button class="ib" id="cvPageAdd" data-teacher type="button" title="Nieuwe pagina">+</button>
+        <button class="ib" id="cvPageRen" data-teacher type="button" title="Pagina hernoemen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+        <button class="ib" id="cvPageDel" data-teacher type="button" title="Pagina verwijderen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        <button class="btn sm" id="aiCanvasWords" data-teacher type="button" title="AI haalt de woorden uit deze pagina en sorteert ze op een nieuwe pagina">✨ Woorden</button>
         <button class="ib" data-cmd="wipe" data-teacher type="button" title="Canvas leegmaken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
       </div>
       <div class="pnav" id="wbNav">
@@ -326,6 +336,8 @@
     <span class="lab">Nieuwe woorden van vandaag</span>
     <form class="row" id="wordForm"><input class="inp" id="wNl" placeholder="woord" autocomplete="off"><input class="inp" id="wUit" placeholder="uitleg" autocomplete="off"><button class="btn sm" type="submit">+</button></form>
     <ul class="words" id="wordList"></ul>
+    <div class="row" style="flex-wrap:wrap"><button class="btn sm" id="aiSort" type="button">✨ Sorteer met AI</button><button class="btn sm ghost" id="aiToCanvas" type="button">Zet in canvas</button></div>
+    <div id="sorted" hidden></div>
     <p class="muted" id="allWordsInfo"></p>
   </div>
   <div class="pane" data-pane="hw" hidden>
@@ -343,9 +355,11 @@
     <button class="btn sm ghost" id="delStudent" type="button" style="align-self:flex-start;color:var(--coral)">Leerling verwijderen</button>
   </div>
   <div class="nfoot">
-    <button class="btn sm" id="report" type="button">Lesverslag kopiëren</button>
+    <button class="btn sm" id="aiReport" type="button">✨ Lesverslag met AI</button>
+    <button class="btn sm ghost" id="report" type="button">Snel verslag</button>
     <button class="btn sm ghost" id="exportBtn" type="button">Back-up</button>
     <label class="btn sm ghost">Terugzetten<input type="file" id="importIn" accept="application/json" hidden></label>
+    <span class="muted" id="cloudState" style="width:100%;font-size:.76rem"></span>
   </div>
 </aside>
 
@@ -365,6 +379,22 @@
     <input class="inp" id="newGoal" placeholder="Doel (optioneel)">
     <div class="row"><button class="btn primary" type="submit">Toevoegen</button><button class="btn ghost" type="button" id="newCancel">Annuleren</button></div>
   </form>
+</div>
+<div class="ov" id="passOv" hidden data-teacher>
+  <form class="dlg" id="passForm">
+    <h2>Inloggen</h2>
+    <p class="muted" id="passMsg">Log in om je notities online te bewaren.</p>
+    <input class="inp" id="passIn" type="password" placeholder="Wachtwoord van je klaslokaal" autocomplete="current-password">
+    <div class="row"><button class="btn primary" type="submit">Inloggen</button><button class="btn ghost" type="button" id="passSkip">Zonder online opslag</button></div>
+  </form>
+</div>
+<div class="ov" id="repOv" hidden data-teacher>
+  <div class="dlg" style="max-width:560px">
+    <h2>Lesverslag</h2>
+    <p class="muted">Gemaakt door AI. Lees het even na en pas aan waar nodig.</p>
+    <textarea class="inp" id="repText" style="min-height:300px"></textarea>
+    <div class="row"><button class="btn primary" id="repCopy" type="button">Kopiëren</button><button class="btn ghost" id="repClose" type="button">Sluiten</button></div>
+  </div>
 </div>
 <div class="toast" id="toast" hidden></div>
 
@@ -441,6 +471,7 @@ function onMessage(m){
     case "cvb": cvApplyBlock(m); break;
     case "cvo": cvApplyOrder(m.ids); break;
     case "scr": if(!m.on) hideScreen(); break;
+    case "cvpage": var pl = $("cvPageLbl"); if(pl){ pl.textContent = String(m.title || "").slice(0, 40) + " (" + m.i + "/" + m.n + ")"; } break;
   }
 }
 function status(head, msg){
@@ -847,6 +878,7 @@ function sendState(){
   send({t:"perm", draw:canDraw});
   send({t:"mode", m:mode});
   cvSendAll();
+  if(window.sendCvPage) window.sendCvPage();
   send({t:"wb", k:WB.key, list:WB.list});
   WB.list.forEach(function(k){ (objs[k] || []).forEach(function(o){ sendObjWhole(k, o); }); });
   if(SL.key){
@@ -1238,13 +1270,47 @@ document.querySelectorAll("[data-cmd]").forEach(function(btn){
 });
 cvNormalize();
 
-/* =================================================================== NOTITIES (alleen docent, in deze browser) */
+/* =================================================================== NOTITIES, CANVAS-PAGINA'S, OPSLAG EN AI (alleen docent) */
 if(isT){
   var KEY = "klas-notities-v1";
   var db = store(KEY) || {students:[], lessons:{}, sel:null};
   if(!db.students) db.students = []; if(!db.lessons) db.lessons = {};
+
+  /* ---------- online opslag (api/data op Vercel) ---------- */
+  var CLOUD = {on:false, ai:false, pass:null, dirty:{}, timer:null};
+  function api(path, opts){
+    opts = opts || {}; opts.headers = Object.assign({"x-klas-pass": CLOUD.pass || ""}, opts.headers || {});
+    return fetch(path, opts).then(function(r){
+      if(r.status === 401) throw new Error("wachtwoord");
+      return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ("fout " + r.status)); return j; });
+    });
+  }
+  function cloudGet(key){ return api("api/data?key=" + encodeURIComponent(key)).then(function(j){ return j.value; }); }
+  function cloudPut(key, value){ return api("api/data", {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({key:key, value:value})}); }
+  function setSaved(t){ $("saved").textContent = t; $("cloudState").textContent = t; }
+  function queueCloud(key, getter){
+    if(!CLOUD.on) return;
+    CLOUD.dirty[key] = getter;
+    clearTimeout(CLOUD.timer);
+    CLOUD.timer = setTimeout(flushCloud, 1500);
+  }
+  function flushCloud(){
+    var keys = Object.keys(CLOUD.dirty); if(!keys.length) return;
+    var jobs = keys.map(function(k){ var g = CLOUD.dirty[k]; delete CLOUD.dirty[k]; return cloudPut(k, g()).catch(function(e){ CLOUD.dirty[k] = g; throw e; }); });
+    Promise.all(jobs).then(function(){ setSaved("online opgeslagen"); })
+      .catch(function(){ setSaved("offline, wordt later opgeslagen"); clearTimeout(CLOUD.timer); CLOUD.timer = setTimeout(flushCloud, 8000); });
+  }
+  window.addEventListener("beforeunload", function(){ if(Object.keys(CLOUD.dirty).length) flushCloud(); });
+
   var saveT = null;
-  function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try{ localStorage.setItem(KEY, JSON.stringify(db)); $("saved").textContent = "opgeslagen"; }catch(e){ $("saved").textContent = "niet opgeslagen!"; } }, 300); }
+  function save(){
+    clearTimeout(saveT);
+    saveT = setTimeout(function(){
+      try{ localStorage.setItem(KEY, JSON.stringify(db)); setSaved(CLOUD.on ? "opslaan..." : "opgeslagen op deze laptop"); }catch(e){ setSaved("niet opgeslagen!"); }
+      queueCloud("notes", function(){ return db; });
+    }, 300);
+  }
+
   function today(){ var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function nice(iso){ return new Date(iso + "T12:00:00").toLocaleDateString("nl-NL", {weekday:"long", day:"numeric", month:"long"}); }
   function stu(){ return db.students.filter(function(s){ return s.id === db.sel; })[0] || null; }
@@ -1255,6 +1321,8 @@ if(isT){
     if(!l && create){ l = {date:t, notes:"", words:[], hw:""}; L.push(l); }
     return l || null;
   }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
   function renderStudents(){
     var sel = $("studentSel"); sel.innerHTML = "";
     if(!db.students.length){ var o = document.createElement("option"); o.textContent = "Nog geen leerlingen"; o.value = ""; sel.appendChild(o); }
@@ -1263,6 +1331,22 @@ if(isT){
     });
     if(!stu() && db.students.length) db.sel = db.students[0].id;
     sel.value = db.sel || ""; renderAll();
+  }
+  function renderSorted(l){
+    var box = $("sorted"); box.innerHTML = "";
+    var srt = l && l.sorted; if(!srt){ box.hidden = true; return; }
+    box.hidden = false;
+    function group(title, items, fmt){
+      if(!items || !items.length) return;
+      var h = document.createElement("div"); h.className = "lab"; h.style.marginTop = "6px"; h.textContent = title + " (" + items.length + ")"; box.appendChild(h);
+      var ul = document.createElement("ul"); ul.className = "words";
+      items.forEach(function(it){ var li = document.createElement("li"); li.innerHTML = "<span>" + fmt(it) + "</span>"; ul.appendChild(li); });
+      box.appendChild(ul);
+    }
+    group("Werkwoorden", srt.werkwoorden, function(w){ return "<b>" + esc(w.infinitief) + "</b>" + (w.onregelmatig ? ' <span style="color:var(--coral);font-size:.78rem;font-weight:700">onregelmatig</span>' : "") + "<br><small>" + esc([w.verleden, (w.hulpwerkwoord ? w.hulpwerkwoord + " " : "") + (w.voltooid || "")].filter(Boolean).join(" · ")) + (w.betekenis ? " = " + esc(w.betekenis) : "") + "</small>"; });
+    group("Zelfstandig naamwoorden", srt.zelfstandig, function(w){ return "<b>" + esc(w.lidwoord ? w.lidwoord + " " : "") + esc(w.woord) + "</b>" + (w.meervoud ? " · " + esc(w.meervoud) : "") + (w.betekenis ? "<br><small>= " + esc(w.betekenis) + "</small>" : ""); });
+    group("Bijvoeglijk naamwoorden", srt.bijvoeglijk, function(w){ return "<b>" + esc(w.woord) + "</b>" + ((w.vergrotend || w.overtreffend) ? " · " + esc([w.vergrotend, w.overtreffend].filter(Boolean).join(" · ")) : "") + (w.betekenis ? "<br><small>= " + esc(w.betekenis) + "</small>" : ""); });
+    group("Overig", srt.overig, function(w){ return "<b>" + esc(w.woord) + "</b>" + (w.soort ? " <small>(" + esc(w.soort) + ")</small>" : "") + (w.betekenis ? "<br><small>= " + esc(w.betekenis) + "</small>" : ""); });
   }
   function renderAll(){
     var s = stu();
@@ -1280,6 +1364,7 @@ if(isT){
       x.addEventListener("click", function(){ l.words.splice(i, 1); save(); renderAll(); });
       li.appendChild(x); ul.appendChild(li);
     });
+    renderSorted(l);
     var total = s ? lessonsOf(s.id).reduce(function(n, x){ return n + x.words.length; }, 0) : 0;
     $("allWordsInfo").textContent = s ? total + " woorden in totaal bij " + s.name + "." : "Voeg eerst een leerling toe.";
     var h = $("hist"); h.innerHTML = "";
@@ -1293,15 +1378,107 @@ if(isT){
     $("pName").value = s ? s.name : ""; $("pLevel").value = s ? s.level : "A1";
     $("pGoal").value = s ? (s.goal || "") : ""; $("pAbout").value = s ? (s.about || "") : "";
   }
-  var cvOwner = null, cvSaveT = null;
-  function cvKey(id){ return "klas-canvas-" + (id || "algemeen"); }
-  window.cvSave = function(){ clearTimeout(cvSaveT); var owner = cvOwner; cvSaveT = setTimeout(function(){ try{ localStorage.setItem(cvKey(owner), CV.innerHTML); }catch(e){} }, 400); };
-  function cvSwitch(id){
-    if(cvOwner !== null || id){ try{ localStorage.setItem(cvKey(cvOwner), CV.innerHTML); }catch(e){} }
-    clearTimeout(cvSaveT); cvOwner = id || null;
-    var html = null; try{ html = localStorage.getItem(cvKey(cvOwner)); }catch(e){}
-    cvLoad(html || "");
+
+  /* ---------- canvas: pagina's per leerling ---------- */
+  var cvOwner = null, cvDoc = null, cvSaveT = null;
+  function cvKey(id){ return "canvas:" + (id || "algemeen"); }
+  function localCv(id){ try{ var j = localStorage.getItem("klas-canvas2-" + (id || "algemeen")); if(j) return JSON.parse(j); var old = localStorage.getItem("klas-canvas-" + (id || "algemeen")); if(old) return {pages:[{id:uid(), title:"Pagina 1", html:old}], cur:0}; }catch(e){} return null; }
+  function newDoc(){ return {pages:[{id:uid(), title:"Pagina 1", html:""}], cur:0}; }
+  function curPage(){ return cvDoc.pages[Math.min(cvDoc.cur, cvDoc.pages.length - 1)]; }
+  function persistCv(){
+    if(!cvDoc) return;
+    curPage().html = CV.innerHTML;
+    var owner = cvOwner, doc = cvDoc;
+    try{ localStorage.setItem("klas-canvas2-" + (owner || "algemeen"), JSON.stringify(doc)); }catch(e){}
+    queueCloud(cvKey(owner), function(){ return doc; });
   }
+  window.cvSave = function(){ clearTimeout(cvSaveT); cvSaveT = setTimeout(persistCv, 500); };
+  function renderPages(){
+    var sel = $("cvPageSel"); sel.innerHTML = "";
+    cvDoc.pages.forEach(function(p, i){ var o = document.createElement("option"); o.value = i; o.textContent = (i + 1) + ". " + p.title; sel.appendChild(o); });
+    sel.value = cvDoc.cur;
+    send({t:"cvpage", title:curPage().title, i:cvDoc.cur + 1, n:cvDoc.pages.length});
+  }
+  function openPage(i){
+    if(!cvDoc) return;
+    clearTimeout(cvSaveT); curPage().html = CV.innerHTML;
+    cvDoc.cur = Math.max(0, Math.min(i, cvDoc.pages.length - 1));
+    cvLoad(curPage().html || ""); renderPages(); persistCv();
+  }
+  function setDoc(doc){ cvDoc = doc && doc.pages && doc.pages.length ? doc : newDoc(); if(cvDoc.cur >= cvDoc.pages.length) cvDoc.cur = 0; cvLoad(curPage().html || ""); renderPages(); }
+  function cvSwitch(id){
+    if(cvDoc){ clearTimeout(cvSaveT); persistCv(); }
+    cvOwner = id || null;
+    var local = localCv(cvOwner);
+    setDoc(local);
+    if(CLOUD.on) cloudGet(cvKey(cvOwner)).then(function(v){ if(v && v.pages && cvOwner === (id || null)){ setDoc(v); } else if(local && !v){ persistCv(); } }).catch(function(){});
+  }
+  function addPage(title, html){
+    clearTimeout(cvSaveT); curPage().html = CV.innerHTML;
+    cvDoc.pages.push({id:uid(), title:title || ("Pagina " + (cvDoc.pages.length + 1)), html:html || ""});
+    openPage(cvDoc.pages.length - 1);
+  }
+  window.sendCvPage = function(){ if(cvDoc) send({t:"cvpage", title:curPage().title, i:cvDoc.cur + 1, n:cvDoc.pages.length}); };
+  $("cvPageSel").addEventListener("change", function(){ openPage(+this.value); });
+  $("cvPageAdd").addEventListener("click", function(){ addPage(); });
+  $("cvPageRen").addEventListener("click", function(){ var t = prompt("Naam van deze pagina:", curPage().title); if(t && t.trim()){ curPage().title = t.trim().slice(0, 60); renderPages(); persistCv(); } });
+  $("cvPageDel").addEventListener("click", function(){
+    if(cvDoc.pages.length < 2){ toast("Dit is de laatste pagina"); return; }
+    if(!confirm('Pagina "' + curPage().title + '" verwijderen?')) return;
+    cvDoc.pages.splice(cvDoc.cur, 1); cvDoc.cur = Math.max(0, cvDoc.cur - 1);
+    cvLoad(curPage().html || ""); renderPages(); persistCv();
+  });
+
+  /* ---------- AI ---------- */
+  function ai(body){
+    if(!CLOUD.ai) return Promise.reject(new Error("AI staat nog niet aan. Zet ANTHROPIC_API_KEY in Vercel."));
+    return api("api/ai", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  }
+  function busy(btn, on, label){ btn.disabled = on; if(on){ btn.dataset.l = btn.innerHTML; btn.innerHTML = label || "Bezig..."; } else if(btn.dataset.l){ btn.innerHTML = btn.dataset.l; } }
+  function sortedToHtml(srt, title){
+    var out = '<div class="b" data-t="h">' + esc(title) + "</div>";
+    function sec(name, items, fmt){ if(!items || !items.length) return; out += '<div class="b" data-t="h">' + name + "</div>"; items.forEach(function(it){ out += '<div class="b" data-t="li">' + fmt(it) + "</div>"; }); }
+    sec("Werkwoorden", srt.werkwoorden, function(w){ return "<b>" + esc(w.infinitief) + "</b>" + esc(" · " + [w.verleden, (w.hulpwerkwoord ? w.hulpwerkwoord + " " : "") + (w.voltooid || "")].filter(Boolean).join(" · ")) + (w.betekenis ? esc(" = " + w.betekenis) : ""); });
+    sec("Zelfstandig naamwoorden", srt.zelfstandig, function(w){ return "<b>" + esc((w.lidwoord ? w.lidwoord + " " : "") + w.woord) + "</b>" + esc((w.meervoud ? " · " + w.meervoud : "") + (w.betekenis ? " = " + w.betekenis : "")); });
+    sec("Bijvoeglijk naamwoorden", srt.bijvoeglijk, function(w){ return "<b>" + esc(w.woord) + "</b>" + esc([w.vergrotend, w.overtreffend].filter(Boolean).map(function(x){ return " · " + x; }).join("") + (w.betekenis ? " = " + w.betekenis : "")); });
+    sec("Overig", srt.overig, function(w){ return "<b>" + esc(w.woord) + "</b>" + esc((w.soort ? " (" + w.soort + ")" : "") + (w.betekenis ? " = " + w.betekenis : "")); });
+    return out;
+  }
+  $("aiSort").addEventListener("click", function(){
+    var s = stu(), l = todayLesson(false), btn = this;
+    if(!s || !l || !l.words.length){ toast("Voeg eerst woorden toe bij Woorden"); return; }
+    busy(btn, true, "AI sorteert...");
+    ai({task:"sort", words:l.words, level:s.level}).then(function(j){ l.sorted = j.result; save(); renderAll(); toast("Woorden gesorteerd"); })
+      .catch(function(e){ toast(e.message); }).then(function(){ busy(btn, false); });
+  });
+  $("aiToCanvas").addEventListener("click", function(){
+    var l = todayLesson(false); if(!l || !l.sorted){ toast("Sorteer eerst de woorden"); return; }
+    addPage("Woorden " + new Date().toLocaleDateString("nl-NL", {day:"numeric", month:"short"}), sortedToHtml(l.sorted, "Woorden van " + nice(l.date)));
+    setMode("cv"); toast("Woordenlijst staat in het canvas");
+  });
+  $("aiCanvasWords").addEventListener("click", function(){
+    var s = stu(), btn = this, text = CV.innerText.trim();
+    if(text.length < 3){ toast("Deze canvaspagina is nog leeg"); return; }
+    busy(btn, true, "...");
+    ai({task:"sort", text:text.slice(0, 8000), level:s ? s.level : "A2"}).then(function(j){
+      var t = curPage().title;
+      addPage("Woorden: " + t, sortedToHtml(j.result, "Woorden uit: " + t));
+      var l = todayLesson(true); if(l){ l.sorted = j.result; save(); renderAll(); }
+      toast("Nieuwe pagina met de woordenlijst");
+    }).catch(function(e){ toast(e.message); }).then(function(){ busy(btn, false); });
+  });
+  $("aiReport").addEventListener("click", function(){
+    var s = stu(), l = todayLesson(false), btn = this;
+    if(!s){ toast("Kies eerst een leerling"); return; }
+    busy(btn, true, "AI schrijft...");
+    ai({task:"report", name:s.name.split(" ")[0], level:s.level, goal:s.goal || "", notes:l ? l.notes : "", words:l ? l.words : [], hw:l ? l.hw : "", canvas:CV.innerText.slice(0, 6000)})
+      .then(function(j){ $("repText").value = j.result; $("repOv").hidden = false; })
+      .catch(function(e){ toast(e.message); }).then(function(){ busy(btn, false); });
+  });
+  $("repCopy").addEventListener("click", function(){ copy($("repText").value, "Lesverslag gekopieerd, plak het in WhatsApp of mail"); });
+  $("repClose").addEventListener("click", function(){ $("repOv").hidden = true; });
+
+  /* ---------- gewone notitie-knoppen ---------- */
   $("studentSel").addEventListener("change", function(){ db.sel = this.value; save(); renderAll(); cvSwitch(db.sel); });
   $("nToday").addEventListener("input", function(){ var l = todayLesson(true); if(l){ l.notes = this.value; save(); } });
   $("nHw").addEventListener("input", function(){ var l = todayLesson(true); if(l){ l.hw = this.value; save(); } });
@@ -1314,7 +1491,7 @@ if(isT){
   $("pLevel").addEventListener("change", function(){ var s = stu(); if(s){ s.level = this.value; save(); renderStudents(); } });
   $("delStudent").addEventListener("click", function(){
     var s = stu(); if(!s || !confirm(s.name + " en alle notities verwijderen?")) return;
-    db.students = db.students.filter(function(x){ return x.id !== s.id; }); delete db.lessons[s.id]; db.sel = null; save(); renderStudents();
+    db.students = db.students.filter(function(x){ return x.id !== s.id; }); delete db.lessons[s.id]; db.sel = null; save(); renderStudents(); cvSwitch(db.sel);
   });
   $("addStudent").addEventListener("click", function(){ $("newOv").hidden = false; $("newName").value = ""; $("newGoal").value = ""; $("newName").focus(); });
   $("newCancel").addEventListener("click", function(){ $("newOv").hidden = true; });
@@ -1337,20 +1514,67 @@ if(isT){
     copy(txt + "\n\nTot de volgende keer!\nScip", "Lesverslag gekopieerd, plak het in WhatsApp of mail");
   });
   $("exportBtn").addEventListener("click", function(){
-    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 1)], {type:"application/json"}));
+    persistCv();
+    var all = {notes:db, canvas:{}};
+    db.students.concat([{id:null}]).forEach(function(s){ var c = localCv(s.id); if(c) all.canvas[s.id || "algemeen"] = c; });
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(all, null, 1)], {type:"application/json"}));
     a.download = "klas-backup-" + today() + ".json"; document.body.appendChild(a); a.click(); a.remove();
   });
   $("importIn").addEventListener("change", function(e){
     var f = e.target.files && e.target.files[0]; if(!f) return; var r = new FileReader();
-    r.onload = function(){ try{ var d = JSON.parse(r.result); if(!d.students) throw 0; if(!confirm("Je huidige notities vervangen door deze back-up?")) return; db = d; save(); renderStudents(); toast("Back-up teruggezet"); }catch(err){ toast("Dit is geen geldige back-up"); } };
+    r.onload = function(){
+      try{
+        var d = JSON.parse(r.result), notes = d.notes || d; if(!notes.students) throw 0;
+        if(!confirm("Je huidige notities vervangen door deze back-up?")) return;
+        db = notes; save();
+        if(d.canvas) Object.keys(d.canvas).forEach(function(k){ try{ localStorage.setItem("klas-canvas2-" + k, JSON.stringify(d.canvas[k])); }catch(err){} queueCloud("canvas:" + k, function(){ return d.canvas[k]; }); });
+        renderStudents(); cvDoc = null; cvSwitch(db.sel); toast("Back-up teruggezet");
+      }catch(err){ toast("Dit is geen geldige back-up"); }
+    };
     r.readAsText(f); e.target.value = "";
   });
-  function showDrawer(v){ $("drawer").hidden = !v; $("notesBtn").setAttribute("aria-pressed", v ? "true" : "false"); }
+  function showDrawer(v){
+    $("drawer").hidden = !v; $("notesBtn").setAttribute("aria-pressed", v ? "true" : "false");
+    if(v && !vw.hidden){
+      var d = $("drawer").getBoundingClientRect(), r = vw.getBoundingClientRect();
+      var overlap = r.right > d.left && r.left < d.right && r.bottom > d.top && r.top < d.bottom;
+      if(overlap && d.left > r.width + 24){ vw.style.left = (d.left - r.width - 12) + "px"; rememberVideo(); }
+    }
+  }
   $("notesBtn").addEventListener("click", function(){ showDrawer($("drawer").hidden); });
   $("drawerClose").addEventListener("click", function(){ showDrawer(false); });
+
+  /* ---------- opstarten: lokaal, daarna online ophalen ---------- */
   renderStudents();
-  cvOwner = db.sel || null;
-  try{ var first = localStorage.getItem(cvKey(cvOwner)); if(first) cvLoad(first); }catch(e){}
+  cvSwitch(db.sel);
+  setSaved("opgeslagen op deze laptop");
+  function connectCloud(pass){
+    CLOUD.pass = pass;
+    return cloudGet("notes").then(function(v){
+      CLOUD.on = true; try{ localStorage.setItem("klas-pass", pass); }catch(e){}
+      if(v && v.students){ db = v; try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){} renderStudents(); }
+      else queueCloud("notes", function(){ return db; });
+      cvDoc = null; cvSwitch(db.sel);
+      setSaved("online opgeslagen");
+    });
+  }
+  fetch("api/data?ping=1").then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }).then(function(p){
+    if(!p || !p.ok){ $("cloudState").textContent = "alleen op deze laptop (geen server gevonden)"; return; }
+    CLOUD.ai = !!p.ai;
+    if(!p.storage || !p.password){ $("cloudState").textContent = "server gevonden, maar " + (!p.storage ? "opslag" : "wachtwoord") + " is nog niet ingesteld"; return; }
+    var saved = null; try{ saved = localStorage.getItem("klas-pass"); }catch(e){}
+    function ask(msg){
+      $("passMsg").textContent = msg || ""; $("passOv").hidden = false; $("passIn").value = ""; $("passIn").focus();
+    }
+    $("passForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      connectCloud($("passIn").value).then(function(){ $("passOv").hidden = true; toast("Je notities staan nu online"); })
+        .catch(function(err){ ask(err.message === "wachtwoord" ? "Verkeerd wachtwoord, probeer opnieuw." : "Kan de server niet bereiken."); });
+    });
+    $("passSkip").addEventListener("click", function(){ $("passOv").hidden = true; $("cloudState").textContent = "alleen op deze laptop"; });
+    if(saved) connectCloud(saved).catch(function(){ ask("Log in om je notities online te bewaren."); });
+    else ask("Log in om je notities online te bewaren.");
+  });
 }
 
 /* =================================================================== START */
