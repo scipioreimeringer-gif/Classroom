@@ -184,7 +184,8 @@
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v11</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v12</small></div>
+  <select class="pgsel" id="topStudent" data-teacher title="Met welke leerling heb je nu les?" aria-label="Leerling"></select>
   <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
   <span class="timer" id="timer" title="Lestijd">00:00</span>
   <button class="btn sm ghost" id="copyLink" data-teacher type="button">Link voor leerling</button>
@@ -462,6 +463,7 @@ function onMessage(m){
     case "chunk": incomingChunk(m); break;
     case "show": SL.show(m.k, true); markNew("sl"); break;
     case "wb": WB.list = m.list; WB.show(m.k, true); break;
+    case "wbreset": Object.keys(objs).forEach(function(k){ if(k.indexOf("wb:") === 0) delete objs[k]; }); WB.redrawObjs(); wbInfo(); break;
     case "obj": remoteObj(m); break;
     case "erase": removeObj(m.k, m.id, true); break;
     case "clear": clearKey(m.k, true); break;
@@ -782,7 +784,7 @@ WB.show = function(k, remote){
   if(WB.list.indexOf(k) < 0) WB.list.push(k);
   WB.key = k; if(!objs[k]) objs[k] = [];
   WB.redraw(); wbInfo();
-  if(!remote && isT) send({t:"wb", k:k, list:WB.list});
+  if(!remote && isT){ send({t:"wb", k:k, list:WB.list}); wbTouched(k); }
 };
 function wbInfo(){
   var i = WB.list.indexOf(WB.key);
@@ -980,7 +982,7 @@ function bindDraw(S){
     drawing.p.push(p[0], p[1]); S.redrawObjs();
     if(Date.now() - lastSent > 60) flush();
   });
-  function end(){ if(!drawing || drawing.S !== S) return; if(!drawing.erase) flush(); drawing = null; }
+  function end(){ if(!drawing || drawing.S !== S) return; if(!drawing.erase) flush(); drawing = null; if(S === WB) wbTouched(WB.key); }
   dc.addEventListener("pointerup", end); dc.addEventListener("pointercancel", end);
 }
 function clean(o){ var c = {}; for(var k in o) if(k !== "S" && k !== "k") c[k] = o[k]; return c; }
@@ -996,6 +998,7 @@ function sendObjWhole(k, o){
   for(var from = 0; from < o.p.length; from += 598)
     send({t:"obj", k:k, id:o.id, c:o.c, p:o.p.slice(from ? from - 2 : 0, from + 600), a:from > 0});
 }
+function wbTouched(k){ if(isT && window.wbDirty && String(k || "").indexOf("wb:") === 0) window.wbDirty(); }
 function remoteObj(m){
   if(!objs[m.k]) objs[m.k] = [];
   var list = objs[m.k], o = null;
@@ -1008,6 +1011,7 @@ function remoteObj(m){
   }
   if(m.k === WB.key){ WB.redrawObjs(); wbInfo(); }
   if(m.k === SL.key) SL.redrawObjs();
+  wbTouched(m.k);
 }
 function eraseAt(S, p){
   var list = objs[S.key] || [], R = 140;
@@ -1019,6 +1023,7 @@ function eraseAt(S, p){
   }
 }
 function removeObj(k, id, remote){
+  wbTouched(k);
   var list = objs[k] || [];
   for(var i = 0; i < list.length; i++) if(list[i].id === id){ list.splice(i, 1); break; }
   if(k === WB.key){ WB.redrawObjs(); wbInfo(); }
@@ -1026,6 +1031,7 @@ function removeObj(k, id, remote){
   if(!remote) send({t:"erase", k:k, id:id});
 }
 function clearKey(k, remote){
+  wbTouched(k);
   objs[k] = []; if(k === WB.key){ WB.redrawObjs(); wbInfo(); } if(k === SL.key) SL.redrawObjs();
   if(!remote) send({t:"clear", k:k});
 }
@@ -1053,7 +1059,7 @@ function startText(S, p){
     S.d.font = "600 " + Math.round(S.dc.width * 0.034) + "px Karla, system-ui, sans-serif";
     var wpx = Math.max.apply(null, txt.split("\n").map(function(l){ return S.d.measureText(l).width; }));
     var o = {id:uid(), ty:"tx", c:color, x:p[0], y:p[1], txt:txt, w:Math.round(wpx / S.dc.width * 1e4)};
-    objs[S.key].push(o); mine.push({k:S.key, id:o.id}); S.redrawObjs(); if(S === WB) wbInfo();
+    objs[S.key].push(o); mine.push({k:S.key, id:o.id}); S.redrawObjs(); if(S === WB){ wbInfo(); wbTouched(S.key); }
     sendObjWhole(S.key, o);
   }
   inp.addEventListener("input", function(){ inp.style.height = "auto"; inp.style.height = inp.scrollHeight + "px"; });
@@ -1330,7 +1336,9 @@ if(isT){
       var o = document.createElement("option"); o.value = s.id; o.textContent = s.name + " (" + s.level + ")"; sel.appendChild(o);
     });
     if(!stu() && db.students.length) db.sel = db.students[0].id;
-    sel.value = db.sel || ""; renderAll();
+    sel.value = db.sel || "";
+    var top = $("topStudent"); top.innerHTML = sel.innerHTML; top.value = db.sel || "";
+    renderAll();
   }
   function renderSorted(l){
     var box = $("sorted"); box.innerHTML = "";
@@ -1429,9 +1437,50 @@ if(isT){
     cvLoad(curPage().html || ""); renderPages(); persistCv();
   });
 
+  /* ---------- whiteboards per leerling ---------- */
+  var bdOwner, bdT = null;
+  function bdKey(id){ return "board:" + (id || "algemeen"); }
+  function boardData(){
+    var d = {list:WB.list.slice(), cur:WB.key, objs:{}};
+    WB.list.forEach(function(k){ d.objs[k] = (objs[k] || []).map(function(o){ var c = {}; for(var x in o) if(x !== "S" && x !== "k") c[x] = o[x]; return c; }); });
+    return d;
+  }
+  function persistBoard(){
+    if(bdOwner === undefined) return;
+    var owner = bdOwner, d = boardData();
+    try{ localStorage.setItem("klas-board-" + (owner || "algemeen"), JSON.stringify(d)); }catch(e){}
+    queueCloud(bdKey(owner), function(){ return d; });
+  }
+  window.wbDirty = function(){ clearTimeout(bdT); bdT = setTimeout(persistBoard, 1500); };
+  function applyBoard(d){
+    Object.keys(objs).forEach(function(k){ if(k.indexOf("wb:") === 0) delete objs[k]; });
+    if(!d || !d.list || !d.list.length) d = {list:["wb:1"], cur:"wb:1", objs:{}};
+    Object.keys(d.objs || {}).forEach(function(k){ if(k.indexOf("wb:") === 0) objs[k] = d.objs[k]; });
+    WB.list = d.list.slice();
+    mine = mine.filter(function(m){ return m.k.indexOf("wb:") !== 0; });
+    send({t:"wbreset"});
+    var cur = d.list.indexOf(d.cur) >= 0 ? d.cur : d.list[0];
+    WB.key = null; WB.show(cur, true); send({t:"wb", k:cur, list:WB.list});
+    WB.list.forEach(function(k){ (objs[k] || []).forEach(function(o){ sendObjWhole(k, o); }); });
+  }
+  function localBoard(id){ try{ var j = localStorage.getItem("klas-board-" + (id || "algemeen")); return j ? JSON.parse(j) : null; }catch(e){ return null; } }
+  function boardSwitch(id){
+    if(bdOwner !== undefined){ clearTimeout(bdT); persistBoard(); }
+    bdOwner = id || null;
+    var local = localBoard(bdOwner);
+    applyBoard(local);
+    if(CLOUD.on) cloudGet(bdKey(bdOwner)).then(function(v){ if(bdOwner !== (id || null)) return; if(v && v.list) applyBoard(v); else if(local) persistBoard(); }).catch(function(){});
+  }
+  /* alles van een leerling openen: notities, canvas en whiteboards */
+  function openStudent(id){
+    db.sel = id || null; save(); renderStudents();
+    cvSwitch(db.sel); boardSwitch(db.sel);
+    var s = stu(); if(s) toast("Les met " + s.name + ": notities, canvas en borden geladen");
+  }
+
   /* ---------- AI ---------- */
   function ai(body){
-    if(!CLOUD.ai) return Promise.reject(new Error("AI staat nog niet aan. Zet ANTHROPIC_API_KEY in Vercel."));
+    if(!CLOUD.ai) return Promise.reject(new Error("AI staat nog niet aan. Zet OPENAI_API_KEY of ANTHROPIC_API_KEY in Vercel."));
     return api("api/ai", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
   }
   function busy(btn, on, label){ btn.disabled = on; if(on){ btn.dataset.l = btn.innerHTML; btn.innerHTML = label || "Bezig..."; } else if(btn.dataset.l){ btn.innerHTML = btn.dataset.l; } }
@@ -1479,7 +1528,8 @@ if(isT){
   $("repClose").addEventListener("click", function(){ $("repOv").hidden = true; });
 
   /* ---------- gewone notitie-knoppen ---------- */
-  $("studentSel").addEventListener("change", function(){ db.sel = this.value; save(); renderAll(); cvSwitch(db.sel); });
+  $("studentSel").addEventListener("change", function(){ openStudent(this.value); });
+  $("topStudent").addEventListener("change", function(){ openStudent(this.value); });
   $("nToday").addEventListener("input", function(){ var l = todayLesson(true); if(l){ l.notes = this.value; save(); } });
   $("nHw").addEventListener("input", function(){ var l = todayLesson(true); if(l){ l.hw = this.value; save(); } });
   $("wordForm").addEventListener("submit", function(e){
@@ -1491,14 +1541,14 @@ if(isT){
   $("pLevel").addEventListener("change", function(){ var s = stu(); if(s){ s.level = this.value; save(); renderStudents(); } });
   $("delStudent").addEventListener("click", function(){
     var s = stu(); if(!s || !confirm(s.name + " en alle notities verwijderen?")) return;
-    db.students = db.students.filter(function(x){ return x.id !== s.id; }); delete db.lessons[s.id]; db.sel = null; save(); renderStudents(); cvSwitch(db.sel);
+    db.students = db.students.filter(function(x){ return x.id !== s.id; }); delete db.lessons[s.id]; db.sel = null; save(); renderStudents(); cvSwitch(db.sel); boardSwitch(db.sel);
   });
   $("addStudent").addEventListener("click", function(){ $("newOv").hidden = false; $("newName").value = ""; $("newGoal").value = ""; $("newName").focus(); });
   $("newCancel").addEventListener("click", function(){ $("newOv").hidden = true; });
   $("newForm").addEventListener("submit", function(e){
     e.preventDefault(); var n = $("newName").value.trim(); if(!n) return;
     var s = {id:uid(), name:n, level:$("newLevel").value, goal:$("newGoal").value.trim(), about:""};
-    db.students.push(s); db.sel = s.id; $("newOv").hidden = true; save(); renderStudents(); cvSwitch(db.sel);
+    db.students.push(s); $("newOv").hidden = true; openStudent(s.id);
   });
   document.querySelectorAll(".tab").forEach(function(t){
     t.addEventListener("click", function(){
@@ -1515,8 +1565,9 @@ if(isT){
   });
   $("exportBtn").addEventListener("click", function(){
     persistCv();
-    var all = {notes:db, canvas:{}};
-    db.students.concat([{id:null}]).forEach(function(s){ var c = localCv(s.id); if(c) all.canvas[s.id || "algemeen"] = c; });
+    persistBoard();
+    var all = {notes:db, canvas:{}, boards:{}};
+    db.students.concat([{id:null}]).forEach(function(s){ var c = localCv(s.id); if(c) all.canvas[s.id || "algemeen"] = c; var bd = localBoard(s.id); if(bd) all.boards[s.id || "algemeen"] = bd; });
     var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(all, null, 1)], {type:"application/json"}));
     a.download = "klas-backup-" + today() + ".json"; document.body.appendChild(a); a.click(); a.remove();
   });
@@ -1528,7 +1579,8 @@ if(isT){
         if(!confirm("Je huidige notities vervangen door deze back-up?")) return;
         db = notes; save();
         if(d.canvas) Object.keys(d.canvas).forEach(function(k){ try{ localStorage.setItem("klas-canvas2-" + k, JSON.stringify(d.canvas[k])); }catch(err){} queueCloud("canvas:" + k, function(){ return d.canvas[k]; }); });
-        renderStudents(); cvDoc = null; cvSwitch(db.sel); toast("Back-up teruggezet");
+        if(d.boards) Object.keys(d.boards).forEach(function(k){ try{ localStorage.setItem("klas-board-" + k, JSON.stringify(d.boards[k])); }catch(err){} queueCloud("board:" + k, function(){ return d.boards[k]; }); });
+        renderStudents(); cvDoc = null; cvSwitch(db.sel); bdOwner = undefined; boardSwitch(db.sel); toast("Back-up teruggezet");
       }catch(err){ toast("Dit is geen geldige back-up"); }
     };
     r.readAsText(f); e.target.value = "";
@@ -1546,7 +1598,7 @@ if(isT){
 
   /* ---------- opstarten: lokaal, daarna online ophalen ---------- */
   renderStudents();
-  cvSwitch(db.sel);
+  cvSwitch(db.sel); boardSwitch(db.sel);
   setSaved("opgeslagen op deze laptop");
   function connectCloud(pass){
     CLOUD.pass = pass;
@@ -1554,7 +1606,7 @@ if(isT){
       CLOUD.on = true; try{ localStorage.setItem("klas-pass", pass); }catch(e){}
       if(v && v.students){ db = v; try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){} renderStudents(); }
       else queueCloud("notes", function(){ return db; });
-      cvDoc = null; cvSwitch(db.sel);
+      cvDoc = null; cvSwitch(db.sel); bdOwner = undefined; boardSwitch(db.sel);
       setSaved("online opgeslagen");
     });
   }
@@ -1580,7 +1632,7 @@ if(isT){
 /* =================================================================== START */
 setPerm(true, true);
 setMode("wb", true);
-WB.show("wb:1", true);
+WB.show(WB.key || "wb:1", true);
 SL.show(null, true);
 layout();
 window.addEventListener("resize", function(){ WB.fit(); SL.fit(); placeVideo(store("klas-video")); });
