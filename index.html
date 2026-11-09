@@ -190,12 +190,66 @@
     .vsep{display:none}
     .toast{bottom:76px}
   }
+
+/* Klaslokaal v15 — rustige responsieve lesindeling */
+:root{--ground:#f3f5f7;--ink:#1c2935;--muted:#617080;--teal:#315f72;--teal-soft:#e9f0f3;--coral:#ad604c;--coral-soft:#f7ebe7;--line:#e0e6eb;--line-strong:#cbd5dd;--dock:#172733;--display:system-ui,-apple-system,"Segoe UI",sans-serif;--body:system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{min-height:60px;padding:10px 20px;gap:14px}
+.brand{font-size:1.06rem;letter-spacing:-.035em}
+.brand .dot{background:var(--teal)}
+.panel{border-radius:14px;box-shadow:0 3px 16px rgba(21,37,51,.035)}
+.phead{min-height:52px;padding:8px 12px;gap:7px}
+.ib,.btn,.db,.pgsel{transition:background-color .15s,border-color .15s,box-shadow .15s}
+.ib:hover,.btn:hover{background:var(--teal-soft)}
+.btn.primary{background:var(--teal);border-color:var(--teal)}
+.btn.primary:hover{filter:brightness(.93);color:#fff}
+.dock{border-radius:14px;margin:10px 16px 14px;padding:8px 12px;box-shadow:0 8px 22px rgba(14,32,46,.1)}
+.ws{padding:14px 16px 0;gap:0;transition:margin-right .2s ease}
+.cvbody{align-items:flex-start;justify-content:center;overflow-y:auto;overflow-x:auto;overscroll-behavior:contain;padding:18px}
+.cvpage{min-height:100%;height:auto;width:100%;max-width:none;padding:32px clamp(20px,4vw,64px) 100px;border:1px solid #e5e8eb;border-radius:8px;box-shadow:0 4px 18px rgba(18,36,49,.045)}
+.cv{min-height:65vh;height:auto;overflow:visible;line-height:1.75}
+#slBody{background:#e8edf1}
+#slSurf{box-shadow:0 8px 32px rgba(20,35,45,.12)}
+/* Video heeft een eigen vaste kolom, nooit bovenop lesmateriaal. */
+body.klas-video-on .ws{margin-right:clamp(285px,28vw,430px)}
+body.klas-video-on .vwin{position:fixed!important;top:74px!important;right:16px!important;left:auto!important;bottom:84px!important;width:calc(clamp(285px,28vw,430px) - 16px)!important;height:auto!important;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;resize:none!important;box-shadow:0 4px 24px rgba(17,36,49,.09);border:1px solid var(--line);border-radius:14px;z-index:20}
+body.klas-video-on .vhead{cursor:default;touch-action:auto;padding:10px 12px;background:#172733}
+body.klas-video-on .vhead:active{cursor:default}
+body.klas-video-on .vbody{background:#111b24}
+body.klas-video-on .vbody .remotes{grid-template-columns:1fr}
+body.klas-video-on .vbody .remotes video{object-fit:contain}
+/* Wanneer er geen materiaal open is, is video het hoofdscherm. */
+body.klas-video-on.klas-video-only .ws{display:none}
+body.klas-video-on.klas-video-only .vwin{left:16px!important;right:16px!important;top:74px!important;bottom:84px!important;width:calc(100% - 32px)!important;height:auto!important}
+body.klas-video-on.klas-video-only .vbody .remotes{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+body.klas-video-on.klas-video-only .vbody .remotes video{object-fit:contain}
+body.klas-video-on .vhead #vSize{display:none}
+/* Tablets: video boven materiaal, nooit als overlay. */
+@media(max-width:1100px){
+ body.klas-video-on:not(.klas-video-only) .ws{margin-right:0;padding-top:clamp(190px,27vh,280px)}
+ body.klas-video-on:not(.klas-video-only) .vwin{top:70px!important;bottom:auto!important;left:16px!important;right:16px!important;width:calc(100% - 32px)!important;height:clamp(170px,25vh,260px)!important}
+ body.klas-video-on:not(.klas-video-only) .vbody .remotes{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+ .top{flex-wrap:wrap;gap:8px}
+ .dock{margin:8px 12px 10px}
+}
+@media(min-width:701px) and (max-width:1100px){
+ .ws{padding:12px 12px 0}
+ .phead{min-height:48px}
+ .cvpage{padding:24px 26px 80px}
+}
+@media(max-width:700px){
+ body.klas-video-on:not(.klas-video-only) .ws{padding-top:190px}
+ body.klas-video-on:not(.klas-video-only) .vwin{top:66px!important;height:176px!important;left:8px!important;right:8px!important;width:calc(100% - 16px)!important}
+ body.klas-video-on.klas-video-only .vwin{top:66px!important;bottom:72px!important;left:8px!important;right:8px!important;width:calc(100% - 16px)!important}
+ .cvpage{padding:18px 18px 75px}
+ .cv{min-height:65vh}
+}
+
 </style>
 </head>
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v14</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v15</small></div>
   <label class="language-pick"><span data-i18n="Interface">Interface</span> <select id="uiLanguage" class="pgsel" aria-label="Interface language"><option value="nl">🇳🇱 Nederlands</option><option value="pt">🇧🇷 Português</option><option value="en">🇬🇧 English</option><option value="es">🇪🇸 Español</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option></select></label>
   <label class="language-pick" data-teacher><span data-i18n="Lestaal">Lestaal</span> <select id="lessonLanguage" class="pgsel" aria-label="Lesson language"><option value="nl">🇳🇱 Nederlands</option><option value="pt">🇧🇷 Português</option><option value="en">🇬🇧 English</option><option value="es">🇪🇸 Español</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option></select></label>
   <select class="pgsel" id="topStudent" data-teacher title="Met welke leerling heb je nu les?" aria-label="Leerling"></select>
@@ -697,6 +751,7 @@ if(!isT && !ROOM) status("Verkeerde link", "Vraag je docent om de link van de le
 /* ---------- videovenster: slepen, verbergen, onthouden ---------- */
 var vw = $("vwin");
 function placeVideo(p){
+  if(document.body.classList.contains("klas-video-on")) return;
   var W = window.innerWidth, H = window.innerHeight;
   var small = W <= 700;
   var w = p && p.w ? p.w : (small ? 150 : 340), h = p && p.h ? p.h : (small ? 112 : 255);
@@ -711,6 +766,7 @@ function rememberVideo(){ var r = vw.getBoundingClientRect(); store("klas-video"
 (function(){
   var h = $("vhead"), sx, sy, ox, oy, on = false;
   h.addEventListener("pointerdown", function(e){
+    if(document.body.classList.contains("klas-video-on")) return;
     if(e.target.closest("button")) return;
     on = true; h.setPointerCapture(e.pointerId); vw.classList.add("dragging");
     var r = vw.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
@@ -733,12 +789,12 @@ $("vSize").addEventListener("click", function(){
   vw.style.left = Math.max(0, Math.min(W - w, r.left)) + "px"; vw.style.top = Math.max(0, Math.min(H - hh, r.top)) + "px";
   rememberVideo();
 });
-function showVideo(v){ vw.hidden = !v; $("vidBtn").setAttribute("aria-pressed", v ? "true" : "false"); }
+function showVideo(v){ vw.hidden = !v; document.body.classList.toggle("klas-video-on",v); $("vidBtn").setAttribute("aria-pressed", v ? "true" : "false"); if(typeof layout === "function") layout(); }
 $("vClose").addEventListener("click", function(){ showVideo(false); if(peer) toast("Video verborgen, de les loopt door"); });
 $("vidBtn").addEventListener("click", function(){ showVideo(vw.hidden); });
 
 /* =================================================================== PANELEN */
-var panels = {pWb:true, pSl:true}, saved = store("klas-panels"); if(saved) panels = saved;
+var panels = {pWb:false, pSl:false}, saved = store("klas-panels"); if(saved) panels = saved;
 var leftFr = store("klas-split") || 0.5;
 var mqPhone = window.matchMedia("(max-width:700px)"), mqPortrait = window.matchMedia("(max-width:1024px) and (orientation:portrait)");
 var mview = store("klas-mview") || "wb";
@@ -754,6 +810,7 @@ function layout(){
   ws.style.gridTemplateRows = both && stackIt ? "1fr 1fr" : "1fr";
   document.querySelectorAll("[data-panel]").forEach(function(btn){ btn.setAttribute("aria-pressed", panels[btn.getAttribute("data-panel")] ? "true" : "false"); });
   document.querySelectorAll("[data-mview]").forEach(function(btn){ btn.setAttribute("aria-pressed", btn.getAttribute("data-mview") === mview ? "true" : "false"); });
+  document.body.classList.toggle("klas-video-only", !a && !b);
   store("klas-panels", panels);
   requestAnimationFrame(function(){ WB.fit(); SL.fit(); });
 }
@@ -1728,6 +1785,7 @@ setPerm(true, true);
 setMode("wb", true);
 WB.show(WB.key || "wb:1", true);
 SL.show(null, true);
+document.body.classList.toggle("klas-video-on", !vw.hidden);
 layout();
 window.addEventListener("resize", function(){ WB.fit(); SL.fit(); placeVideo(store("klas-video")); });
 })();
