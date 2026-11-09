@@ -86,6 +86,14 @@
   .cv .b[data-t="li"]:before{content:"";position:absolute;left:.45em;top:.68em;width:6px;height:6px;border-radius:50%;background:#d0523a}
   .cv.is-empty:before{content:attr(data-ph);position:absolute;left:0;top:0;color:#93a8a4;pointer-events:none}
   .nodraw .cv{cursor:default}
+  /* Zoom is local to each viewer; it is never sent to the other participant. */
+  #slBody{overflow:hidden;touch-action:pan-x pan-y}
+  #slSurf{transform-origin:center center;will-change:transform}
+  #slBody.zoom-pan{cursor:grab;touch-action:none}
+  #slBody.zoom-pan.is-panning{cursor:grabbing}
+  .zoom-controls{display:inline-flex;align-items:center;gap:3px;border-left:1px solid var(--line);padding-left:7px}
+  .zoom-controls .ib{width:29px;height:29px;font-size:17px;font-weight:700}
+  .zoom-controls .zoom-level{border:0;background:transparent;font-size:.77rem;font-weight:700;min-width:48px;cursor:pointer}
   .scrv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0b1514}
   #shareBtn.on{background:var(--coral);border-color:var(--coral);color:#fff}
   .split{cursor:col-resize;position:relative}
@@ -184,7 +192,7 @@
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v12</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v13</small></div>
   <select class="pgsel" id="topStudent" data-teacher title="Met welke leerling heb je nu les?" aria-label="Leerling"></select>
   <span class="conn" id="conn" title="Verbinding">niet verbonden</span>
   <span class="timer" id="timer" title="Lestijd">00:00</span>
@@ -251,6 +259,11 @@
       <span class="ptitle" id="slTitle">Slides</span>
       <button class="btn sm" id="shareBtn" data-teacher type="button" title="Deel een tabblad, venster of je hele scherm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 14V8M9 10.5 12 7.5l3 3M8 21h8"/></svg><span id="shareLbl">Scherm delen</span></button>
       <label class="btn sm" data-teacher title="Open een pdf van je PowerPoint">Pdf openen<input type="file" id="pdfIn" accept="application/pdf" hidden></label>
+      <div class="zoom-controls" aria-label="Zoom PDF of gedeeld scherm">
+        <button class="ib" id="zoomOut" type="button" title="Uitzoomen">−</button>
+        <button class="zoom-level" id="zoomReset" type="button" title="Zoom terug naar 100%">100%</button>
+        <button class="ib" id="zoomIn" type="button" title="Inzoomen">+</button>
+      </div>
       <div class="pnav">
         <button class="ib" id="slPrev" data-teacher type="button" title="Vorige slide (pijltje links)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button>
         <span class="pinfo" id="slInfo">-</span>
@@ -799,6 +812,47 @@ $("wbAdd").addEventListener("click", function(){ var k = "wb:" + uid(); var i = 
 /* ---------- slides ---------- */
 var SL = Surface("slSurf", "slBody");
 var slides = [], pdfDoc = null;
+/* Viewer-only zoom: does not change the underlying PDF, screen stream, or shared annotations. */
+(function(){
+  var body = $("slBody"), surface = $("slSurf"), label = $("zoomReset");
+  var scale = 1, panX = 0, panY = 0, active = null;
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+  function update(){
+    var bounds = body.getBoundingClientRect();
+    var maxX = Math.max(0, (surface.offsetWidth * scale - bounds.width) / 2 + 12);
+    var maxY = Math.max(0, (surface.offsetHeight * scale - bounds.height) / 2 + 12);
+    panX = clamp(panX, -maxX, maxX); panY = clamp(panY, -maxY, maxY);
+    surface.style.transform = "translate(" + panX + "px," + panY + "px) scale(" + scale + ")";
+    label.textContent = Math.round(scale * 100) + "%";
+    body.classList.toggle("zoom-pan", scale > 1);
+  }
+  function setZoom(v){ scale = clamp(Math.round(v * 100) / 100, 1, 4); if(scale === 1){ panX = 0; panY = 0; } update(); }
+  $("zoomIn").addEventListener("click", function(){ setZoom(scale + .25); });
+  $("zoomOut").addEventListener("click", function(){ setZoom(scale - .25); });
+  label.addEventListener("click", function(){ setZoom(1); });
+  body.addEventListener("wheel", function(e){
+    if(!e.ctrlKey && !e.metaKey) return;
+    e.preventDefault(); setZoom(scale * (e.deltaY < 0 ? 1.12 : 1 / 1.12));
+  }, {passive:false});
+  /* Pan with middle mouse, or Shift+drag; ordinary drawing stays available. */
+  body.addEventListener("pointerdown", function(e){
+    if(scale <= 1 || !(e.button === 1 || (e.shiftKey && e.button === 0))) return;
+    e.preventDefault(); e.stopPropagation();
+    active = {id:e.pointerId, x:e.clientX, y:e.clientY};
+    body.setPointerCapture(e.pointerId); body.classList.add("is-panning");
+  }, true);
+  body.addEventListener("pointermove", function(e){
+    if(!active || active.id !== e.pointerId) return;
+    e.preventDefault(); e.stopPropagation();
+    panX += e.clientX - active.x; panY += e.clientY - active.y;
+    active.x = e.clientX; active.y = e.clientY; update();
+  }, true);
+  function end(e){ if(active && active.id === e.pointerId){ active = null; body.classList.remove("is-panning"); } }
+  body.addEventListener("pointerup", end, true); body.addEventListener("pointercancel", end, true);
+  if(window.ResizeObserver) new ResizeObserver(update).observe(body);
+  window.klasZoomReset = function(){ setZoom(1); };
+  update();
+})();
 SL.show = function(k, remote){
   SL.key = k; if(!objs[k]) objs[k] = [];
   var src = images[k];
@@ -900,6 +954,7 @@ function fitScreen(){
 scrV.addEventListener("loadedmetadata", fitScreen);
 scrV.addEventListener("resize", fitScreen);
 function showScreen(stream, key){
+  if(window.klasZoomReset) window.klasZoomReset();
   if(!SL.screen) prevSlKey = SL.key;
   SL.screen = true; SL.key = key || "scr"; if(!objs[SL.key]) objs[SL.key] = [];
   scrV.srcObject = stream; scrV.hidden = false; scrV.muted = isT;
