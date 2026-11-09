@@ -65,6 +65,8 @@ module.exports = async (req, res) => {
   try {
     const b = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const level = String(b.level || "A2").slice(0, 3);
+    const languages = {nl:'Dutch',pt:'Brazilian Portuguese',en:'English',es:'Spanish',fr:'French',de:'German'};
+    const lessonLanguage = languages[b.lessonLanguage] || 'Dutch';
     if (b.task === "sort") {
       let input = "";
       if (Array.isArray(b.words) && b.words.length) {
@@ -73,7 +75,8 @@ module.exports = async (req, res) => {
       } else if (b.text) {
         input = "Haal uit deze lestekst de woorden die de leerling (niveau " + level + ") moet leren, maximaal 40, en sorteer ze:\n\n" + String(b.text).slice(0, 8000);
       } else return res.status(400).json({ error: "geen woorden" });
-      const out = await claude(SORT_SYSTEM, input, 3000);
+      const system = lessonLanguage === 'Dutch' ? SORT_SYSTEM : `You are a language teacher specializing in ${lessonLanguage}. Sort the supplied vocabulary into grammatical categories. Reply ONLY as JSON with these exact keys: werkwoorden (array of objects with infinitief, verleden, hulpwerkwoord, voltooid, onregelmatig, betekenis), zelfstandig (array of objects with woord, lidwoord, meervoud, betekenis), bijvoeglijk (array of objects with woord, vergrotend, overtreffend, betekenis), overig (array of objects with woord, soort, betekenis). Use grammar appropriate to ${lessonLanguage}; where a field is not relevant, use an empty string. For betekenis give a short English translation. Do not invent vocabulary.`;
+      const out = await claude(system, input, 3000);
       const result = parseJSON(out);
       ["werkwoorden", "zelfstandig", "bijvoeglijk", "overig"].forEach((k) => { if (!Array.isArray(result[k])) result[k] = []; });
       return res.status(200).json({ result });
@@ -89,7 +92,8 @@ module.exports = async (req, res) => {
         "Huiswerk:\n" + (String(b.hw || "").slice(0, 1000) || "(geen)"),
         "Tekst uit het gedeelde canvas van de les:\n" + (String(b.canvas || "").slice(0, 6000) || "(leeg)"),
       ].filter(Boolean).join("\n\n");
-      const out = await claude(REPORT_SYSTEM, input, 1200);
+      const system = lessonLanguage === 'Dutch' ? REPORT_SYSTEM : `Write a friendly, concise WhatsApp lesson report on behalf of Scip, a ${lessonLanguage} teacher. Write in ${lessonLanguage}, at the student's proficiency level. Include a greeting, what was covered, up to 10 vocabulary items with translations, homework, and a positive closing signed Scip. Use only supplied facts; do not invent activities. Avoid markdown headings.`;
+      const out = await claude(system, input, 1200);
       return res.status(200).json({ result: out.replace(/[—–]/g, ",") });
     }
     return res.status(400).json({ error: "onbekende taak" });
