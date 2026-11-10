@@ -1,0 +1,14 @@
+KLASLOKAAL v16 — VISUAL REFRESH
+
+Basis: originele klaslokaal-v15.zip.
+
+Gewijzigd:
+- index.html: uitsluitend Google Fonts-verwijzing, CSS-overschrijvingen en zichtbare versieaanduiding v16.
+- API-bestanden api/data.js en api/ai.js zijn byte-voor-byte gelijk aan v15.
+- Alle bestaande JavaScript (inline script en externe scriptlinks), HTML-IDs, PeerJS-configuratie, berichten, opslag en API-routes zijn behouden.
+
+Installatie: vervang de bestaande bestanden in het v15-project met de bestanden in deze ZIP. Niet uploaden naar het aparte Klaslokaal2-project.
+
+Kleuren wijzigen: zoek in index.html naar KLASLOKAAL v16 — VISUAL REFRESH ONLY en pas de CSS-variabelen onder :root aan.
+
+Let op: deze visuele versie is niet live getest met twee browsers en een TURN-verbinding. De v15-CSS positioneert video bij actief videobellen als vaste kolom; die bestaande werking is bewust behouden.

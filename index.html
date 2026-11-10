@@ -6,7 +6,7 @@
 <title>Klas | Learn with Scip</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;800&family=Karla:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root{
     --ground:#e9efee;--surface:#ffffff;--ink:#0f2a2e;--muted:#5a706d;--teal:#0a6b66;--teal-soft:#dbeae8;
@@ -191,7 +191,7 @@
     .toast{bottom:76px}
   }
 
-/* Klaslokaal v15 — rustige responsieve lesindeling */
+/* Klaslokaal v15 — oorspronkelijke responsieve lesindeling */
 :root{--ground:#f3f5f7;--ink:#1c2935;--muted:#617080;--teal:#315f72;--teal-soft:#e9f0f3;--coral:#ad604c;--coral-soft:#f7ebe7;--line:#e0e6eb;--line-strong:#cbd5dd;--dock:#172733;--display:system-ui,-apple-system,"Segoe UI",sans-serif;--body:system-ui,-apple-system,"Segoe UI",sans-serif}
 .top{min-height:60px;padding:10px 20px;gap:14px}
 .brand{font-size:1.06rem;letter-spacing:-.035em}
@@ -244,12 +244,145 @@ body.klas-video-on .vhead #vSize{display:none}
  .cv{min-height:65vh}
 }
 
+
+/* ============================================================
+   KLASLOKAAL v16 — VISUAL REFRESH ONLY
+   Pure CSS presentation layer. No selectors, element IDs, event
+   handlers, PeerJS messages, storage keys or API routes changed.
+   Customize brand colors here.
+   ============================================================ */
+:root{
+  --ground:#f5f7f8; --surface:#ffffff; --ink:#172b35; --muted:#657782;
+  --teal:#166a73; --teal-soft:#e6f3f2;
+  --coral:#c76553; --coral-soft:#fff0eb;
+  --line:#e5ebed; --line-strong:#cdd9dc;
+  --dock:#15323a; --dock-ink:#f2faf9;
+  --display:"Plus Jakarta Sans",system-ui,sans-serif;
+  --body:"Inter",system-ui,sans-serif;
+  --radius-sm:10px; --radius-md:12px; --radius-lg:14px;
+  --shadow-card:0 2px 6px rgba(20,49,56,.025),0 12px 32px rgba(20,49,56,.045);
+  --shadow-pop:0 20px 60px rgba(12,35,42,.16);
+  color-scheme:light;
+}
+@media(prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --ground:#101b20;--surface:#19282e;--ink:#e8f2f3;--muted:#a4b7bd;
+  --teal:#73c6c6;--teal-soft:#25464b;--coral:#ee9a82;--coral-soft:#4b302c;
+  --line:#2d434a;--line-strong:#44616a;--dock:#0b161a;--dock-ink:#f2faf9;
+  --shadow-card:0 12px 28px rgba(0,0,0,.14);--shadow-pop:0 20px 60px rgba(0,0,0,.4);
+  color-scheme:dark;
+ }
+}
+:root[data-theme="dark"]{
+ --ground:#101b20;--surface:#19282e;--ink:#e8f2f3;--muted:#a4b7bd;
+ --teal:#73c6c6;--teal-soft:#25464b;--coral:#ee9a82;--coral-soft:#4b302c;
+ --line:#2d434a;--line-strong:#44616a;--dock:#0b161a;--dock-ink:#f2faf9;
+ --shadow-card:0 12px 28px rgba(0,0,0,.14);--shadow-pop:0 20px 60px rgba(0,0,0,.4);
+ color-scheme:dark;
+}
+body{font-size:14px;letter-spacing:-.006em}
+button,select,input,textarea{accent-color:var(--teal)}
+button{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.top{background:var(--surface);border-bottom:1px solid var(--line);min-height:66px;padding:11px clamp(12px,2vw,26px);gap:12px;box-shadow:0 2px 16px rgba(18,50,56,.025);z-index:2}
+.brand{font-size:1.07rem;letter-spacing:-.045em;gap:9px;color:var(--ink)}
+.brand .dot{width:11px;height:11px;background:var(--teal);box-shadow:0 0 0 4px var(--teal-soft)}
+.brand small{font-size:.74rem;font-weight:600;letter-spacing:0}
+.brand .version-tag{border:1px solid var(--line);padding:2px 7px;border-radius:7px;font-size:.66rem;color:var(--muted);opacity:1!important}
+.conn{border:1px solid color-mix(in srgb,var(--coral) 20%,transparent);padding:6px 10px;font-size:.73rem;letter-spacing:.01em}
+.conn:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:7px;vertical-align:1px}
+.conn.ok{border-color:color-mix(in srgb,var(--teal) 24%,transparent)}
+.timer{font-size:.86rem;letter-spacing:.03em;font-variant-numeric:tabular-nums}
+.btn{min-height:37px;border-radius:var(--radius-sm);font-size:.81rem;font-weight:650;padding:8px 12px;transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 3px 10px color-mix(in srgb,var(--teal) 15%,transparent)}
+.btn.primary:hover{filter:none;background:color-mix(in srgb,var(--teal) 88%,black);color:#fff;transform:translateY(-1px)}
+.btn:active,.db:active,.ib:active{transform:translateY(1px)}
+.btn.sm{min-height:32px;padding:5px 10px}
+.inp,.pgsel{border-radius:var(--radius-sm);border-color:var(--line-strong);background:var(--surface);transition:border-color .18s,box-shadow .18s}
+.inp:focus,.pgsel:focus{border-color:var(--teal);outline:0;box-shadow:0 0 0 3px var(--teal-soft)}
+.ws{padding:16px clamp(9px,1.4vw,20px) 0}
+.panel{border-radius:var(--radius-lg);border-color:var(--line);box-shadow:var(--shadow-card)}
+.phead{min-height:56px;padding:9px 13px;gap:7px;background:var(--surface)}
+.ptitle{font-size:.91rem;letter-spacing:-.025em}
+.pinfo{font-size:.78rem}
+.pbody{background:var(--ground)}
+.ib{width:35px;height:35px;border-radius:var(--radius-sm);transition:background-color .18s,color .18s,transform .18s}
+.ib:hover{background:var(--teal-soft);color:var(--teal)}
+.ib.on,.cvbar .ib.on{background:var(--teal-soft);color:var(--teal)}
+.seg{background:var(--ground);border:1px solid var(--line);border-radius:var(--radius-sm)}
+.seg button{border-radius:8px;font-size:.78rem;padding:6px 11px;transition:background-color .18s,box-shadow .18s}
+.seg button[aria-pressed="true"]{box-shadow:0 1px 5px rgba(20,49,56,.1)}
+.cvbody{padding:20px}
+.cvpage{border-radius:var(--radius-md);border:1px solid var(--line);box-shadow:0 4px 22px rgba(18,44,52,.045);padding-top:36px}
+.cv{font-size:16px;line-height:1.75}
+.surf{border-radius:var(--radius-sm)}
+#slBody{background:var(--ground)}
+.split:after{width:3px;border-radius:8px;background:var(--line-strong)}
+.split:hover:after{background:var(--teal)}
+.dock{background:var(--dock);border:1px solid rgba(255,255,255,.09);border-radius:var(--radius-lg);padding:9px 12px;margin:12px clamp(9px,1.4vw,20px) 15px;box-shadow:0 12px 28px rgba(9,34,41,.16);gap:8px}
+.grp{gap:5px}
+.db{height:40px;min-width:40px;border-radius:var(--radius-sm);font-size:.78rem;font-weight:650;transition:background-color .18s,border-color .18s,transform .18s}
+.db:hover{background:rgba(255,255,255,.12)}
+.db[aria-pressed="true"]{background:rgba(107,205,199,.2);border-color:rgba(139,221,216,.5);box-shadow:inset 0 0 0 1px rgba(139,221,216,.1)}
+.db.off,.db.leave{background:var(--coral);border-color:var(--coral)}
+.vsep{background:rgba(255,255,255,.18)}
+.drawer{border-radius:var(--radius-lg);border-color:var(--line);box-shadow:var(--shadow-pop);top:76px;bottom:89px;right:16px;transition:box-shadow .18s}
+.nhead{padding:15px 14px 5px}
+.tabs{gap:4px;padding:8px 12px 0}
+.tab{padding:10px 9px;font-size:.78rem;transition:color .18s,background-color .18s}
+.tab:hover{color:var(--ink);background:var(--ground)}
+.tab[aria-selected="true"]{color:var(--teal);border-bottom-color:var(--teal)}
+.pane{padding:16px;gap:12px}
+.lab{font-size:.69rem;letter-spacing:.075em}
+.words li,.hist details{border-radius:var(--radius-sm);padding:10px 12px}
+.nfoot{padding:12px 14px}
+.dlg{border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow-pop)}
+.dlg h2{font-size:1.34rem;letter-spacing:-.035em}
+.ov{background:rgba(10,29,35,.62);backdrop-filter:blur(5px)}
+.toast{border-radius:var(--radius-sm);box-shadow:var(--shadow-pop);font-size:.81rem;padding:11px 16px}
+.vwin{border-radius:var(--radius-lg);box-shadow:var(--shadow-pop)}
+.vhead{background:var(--dock);padding:8px 10px}
+.selfv{border-radius:var(--radius-sm)}
+.mswitch{gap:6px}
+.mswitch button{border-radius:var(--radius-sm);min-height:42px;transition:background-color .18s,color .18s}
+.mswitch button[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+/* Preserve v15 video positioning and all media behavior. */
+@media(max-width:1100px){
+ .top{gap:8px}
+ .drawer{bottom:84px}
+}
+@media(max-width:700px){
+ body{font-size:14px}
+ .top{min-height:58px;padding:8px 10px;gap:7px}
+ .brand{font-size:.94rem}
+ .brand .version-tag{display:none}
+ .conn{font-size:.68rem;padding:5px 7px}
+ .btn{min-height:38px}
+ .ws{padding:8px 8px 0}
+ .phead{min-height:48px;padding:6px 8px}
+ .ptitle{font-size:.84rem}
+ .ib{width:36px;height:36px}
+ .cvbody{padding:8px}
+ .cvpage{padding:20px 16px 72px}
+ .cv{font-size:16px}
+ .dock{margin:7px 8px 8px;padding:6px;gap:3px;border-radius:12px}
+ .db{min-width:42px;height:42px;padding:0 9px}
+ .drawer{right:8px;left:8px;width:auto;max-width:none;bottom:74px;height:min(75dvh,680px);border-radius:14px}
+ .tabs{padding:5px 8px 0}
+ .tab{padding:10px 8px}
+ .pane{padding:12px}
+ .dlg{padding:20px}
+ .mswitch{padding:8px 8px 0}
+ .mswitch button{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){.btn,.ib,.db,.tab,.seg button,.mswitch button,.drawer{transition:none!important}}
+
 </style>
 </head>
 <body>
 
 <header class="top">
-  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small style="opacity:.6">v15</small></div>
+  <div class="brand"><span class="dot"></span>Klas <small id="roleLabel">docent</small> <small class="version-tag">v16</small></div>
   <label class="language-pick"><span data-i18n="Interface">Interface</span> <select id="uiLanguage" class="pgsel" aria-label="Interface language"><option value="nl">🇳🇱 Nederlands</option><option value="pt">🇧🇷 Português</option><option value="en">🇬🇧 English</option><option value="es">🇪🇸 Español</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option></select></label>
   <label class="language-pick" data-teacher><span data-i18n="Lestaal">Lestaal</span> <select id="lessonLanguage" class="pgsel" aria-label="Lesson language"><option value="nl">🇳🇱 Nederlands</option><option value="pt">🇧🇷 Português</option><option value="en">🇬🇧 English</option><option value="es">🇪🇸 Español</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option></select></label>
   <select class="pgsel" id="topStudent" data-teacher title="Met welke leerling heb je nu les?" aria-label="Leerling"></select>
